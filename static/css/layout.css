@@ -8,6 +8,12 @@
     background: rgba(255, 255, 255, 0.72);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid rgba(13, 27, 54, 0.06);
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.site-header.is-scrolled {
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 12px 30px rgba(13, 27, 54, 0.06);
 }
 
 .navbar {
@@ -81,15 +87,16 @@
 }
 
 .site-footer {
-    padding: 0 1.5rem 1.6rem;
+    padding: 0 1.5rem 1.1rem;
 }
 
 .footer-inner {
     max-width: var(--container-width);
     margin: 0 auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     gap: 1rem;
-    padding: 0.7rem 0 0;
+    padding: 0.45rem 0 0;
     color: var(--text-soft);
+    text-align: center;
 }

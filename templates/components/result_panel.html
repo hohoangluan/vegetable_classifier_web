@@ -1,17 +1,53 @@
 {% if result %}
-<div class="result-panel">
-    <span class="result-badge">Dự đoán thành công</span>
-    <h2>{{ result.label_vi }}</h2>
-    <p><strong>Nhãn:</strong> {{ result.label }}</p>
-    <p><strong>Độ tin cậy:</strong> {{ result.confidence|floatformat:2 }}</p>
-    {% if result.image_url %}
-    <img class="result-image" src="{{ result.image_url }}" alt="{{ result.label_vi }}">
-    {% endif %}
+<div class="classification-result is-success">
+    <div class="classification-alert">
+        <span class="classification-alert-icon">
+            {% include "components/icon_symbol.html" with name="check-circle" %}
+        </span>
+        <div>
+            <p>Kết quả nhận diện:</p>
+            <h3>{% firstof result.label_vi result.label "Không xác định" %}</h3>
+        </div>
+    </div>
+
+    <div class="confidence-block">
+        <div class="confidence-head">
+            <span>Độ tin cậy</span>
+            <strong>{{ result.confidence_percent|default:0|floatformat:2 }}%</strong>
+        </div>
+        <div class="confidence-track" aria-hidden="true">
+            <div class="confidence-fill" style="width: {{ result.confidence_percent|default:0 }}%;"></div>
+        </div>
+    </div>
+
+    <div class="classification-divider"></div>
+
+    <div class="classification-details">
+        <h3>Thông tin chi tiết</h3>
+        <div class="detail-grid">
+            <div class="detail-row">
+                <span>Loại rau:</span>
+                <strong>{% firstof result.label_vi result.label "Không xác định" %}</strong>
+            </div>
+            <div class="detail-row">
+                <span>Thời gian xử lý:</span>
+                <strong>{{ result.processing_time|default:"1.8s" }}</strong>
+            </div>
+            <div class="detail-row">
+                <span>Mô hình:</span>
+                <strong>{{ result.model_name|default:"ResNet50" }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <a class="classify-reset-link" href="{% url 'classifier:classify' %}">Phân Loại Hình Ảnh Khác</a>
 </div>
 {% else %}
-<div class="result-panel empty-state">
-    <span class="result-badge">Chưa có dữ liệu</span>
-    <h2>Chưa có kết quả để hiển thị</h2>
-    <p>Hãy upload một ảnh ở trang classify để xem output mẫu từ model demo.</p>
+<div class="classification-result is-empty">
+    <span class="empty-result-icon">
+        {% include "components/icon_symbol.html" with name="image" %}
+    </span>
+    <h3>Chưa có kết quả</h3>
+    <p>Tải lên hình ảnh để bắt đầu</p>
 </div>
 {% endif %}

@@ -1,16 +1,32 @@
 <header class="site-header" id="site-header">
     <nav class="navbar">
         <a class="brand-mark" href="{% url 'pages:home' %}">
-            <span class="brand-dot"></span>
-            <span>VeggiClassify</span>
+            <span class="brand-icon">
+                {% include "components/icon_symbol.html" with name="leaf" %}
+            </span>
+            <span class="brand-copy">
+                <strong>VeggiClassify</strong>
+                <small>Hệ thống Phân Loại Rau Củ</small>
+            </span>
         </a>
 
         <div class="nav-links">
-            <a href="{% url 'pages:home' %}" data-nav-url="{% url 'pages:home' %}">Trang chủ</a>
-            <a href="{% url 'pages:about' %}" data-nav-url="{% url 'pages:about' %}">Giới thiệu</a>
-            <a href="{% url 'classifier:classify' %}" data-nav-url="{% url 'classifier:classify' %}">Phân loại</a>
-            <a href="{% url 'pages:pipeline' %}" data-nav-url="{% url 'pages:pipeline' %}">Pipeline</a>
-            <a href="{% url 'pages:dataset' %}" data-nav-url="{% url 'pages:dataset' %}">Dataset</a>
+            <a href="{% url 'pages:about' %}" data-nav-url="{% url 'pages:about' %}">
+                {% include "components/icon_symbol.html" with name="leaf" %}
+                <span>Giới Thiệu</span>
+            </a>
+            <a href="{% url 'classifier:classify' %}" data-nav-url="{% url 'classifier:classify' %}">
+                {% include "components/icon_symbol.html" with name="upload" %}
+                <span>Phân Loại</span>
+            </a>
+            <a href="{% url 'pages:pipeline' %}" data-nav-url="{% url 'pages:pipeline' %}">
+                {% include "components/icon_symbol.html" with name="git-branch" %}
+                <span>Pipeline</span>
+            </a>
+            <a href="{% url 'pages:dataset' %}" data-nav-url="{% url 'pages:dataset' %}">
+                {% include "components/icon_symbol.html" with name="database" %}
+                <span>Dataset</span>
+            </a>
         </div>
     </nav>
 </header>
