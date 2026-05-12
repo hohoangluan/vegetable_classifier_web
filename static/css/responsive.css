@@ -107,6 +107,12 @@
         font-size: 1.55rem;
     }
 
+    .pipeline-stage-phase {
+        min-height: 30px;
+        padding-inline: 0.7rem;
+        font-size: 0.8rem;
+    }
+
     .pipeline-flow-list {
         justify-content: flex-start;
     }
@@ -324,6 +330,12 @@
         font-size: 1.4rem;
     }
 
+    .pipeline-stage-phase {
+        min-height: 28px;
+        padding-inline: 0.65rem;
+        font-size: 0.76rem;
+    }
+
     .pipeline-stage-content p,
     .pipeline-stage-listing {
         font-size: 0.93rem;
@@ -381,6 +393,10 @@
 
     .training-metric-item strong {
         font-size: 1.8rem;
+    }
+
+    .training-metrics-note {
+        font-size: 0.9rem;
     }
 
     .pipeline-flow-list {
