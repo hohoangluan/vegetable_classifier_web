@@ -4,30 +4,53 @@ from django.shortcuts import render
 def home_view(request):
     context = {
         "page_name": "home",
+        "hero": {
+            "title": "Hệ Thống Phân Loại Rau Củ",
+            "subtitle": "Sử dụng công nghệ trí tuệ nhân tạo và deep learning để tự động nhận diện và phân loại các loại rau củ một cách chính xác và nhanh chóng",
+            "cta_label": "Bắt Đầu Phân Loại Ngay",
+        },
         "feature_cards": [
             {
-                "icon": "01",
-                "title": "Phan loai bang anh upload",
-                "description": "Sinh vien tai anh len, web goi service va nhan ket qua du doan tu package machine learning.",
-                "meta": "Upload -> Service -> Predictor",
+                "icon_key": "zap",
+                "title": "Phân Loại Nhanh Chóng",
+                "description": "Xử lý hình ảnh và đưa ra kết quả trong vài giây với độ chính xác cao",
             },
             {
-                "icon": "02",
-                "title": "Mo phong pipeline xu ly",
-                "description": "Trang rieng de giai thich cac buoc: tien xu ly, trich rut dac trung, nap model va tra ve nhan.",
-                "meta": "Hoc de hieu luong ML",
+                "icon_key": "badge-check",
+                "title": "Độ Chính Xác Cao",
+                "description": "Sử dụng mô hình deep learning được huấn luyện trên hàng nghìn mẫu dữ liệu",
             },
             {
-                "icon": "03",
-                "title": "Trinh bay dataset",
-                "description": "Minh hoa cau truc tap du lieu va phan bo lop de sinh vien lien ket giua du lieu va ket qua mo hinh.",
-                "meta": "Dataset co cau truc ro rang",
+                "icon_key": "shield",
+                "title": "Đa Dạng Loại Rau Củ",
+                "description": "Hỗ trợ phân loại nhiều loại rau củ phổ biến tại Việt Nam",
+            },
+        ],
+        "usage_steps": [
+            {
+                "number": "1",
+                "icon_key": "upload",
+                "title": "Tải Hình Ảnh",
+                "description": "Chọn hoặc kéo thả hình ảnh rau củ cần phân loại",
+            },
+            {
+                "number": "2",
+                "icon_key": "git-branch",
+                "title": "Xem Pipeline",
+                "description": "Tìm hiểu quy trình xử lý và phân loại",
+            },
+            {
+                "number": "3",
+                "icon_key": "database",
+                "title": "Khám Phá Dataset",
+                "description": "Xem chi tiết về dữ liệu huấn luyện",
             },
         ],
         "stats": [
-            {"number": "4", "label": "Trang chinh", "description": "Trang home, about, pipeline, dataset."},
-            {"number": "1", "label": "App classifier", "description": "Noi xu ly upload va hien thi ket qua."},
-            {"number": "1", "label": "ML package", "description": "Package Python doc lap de Django goi ham predict()."},
+            {"number": "15+", "label": "Loại Rau Củ"},
+            {"number": "95%", "label": "Độ Chính Xác"},
+            {"number": "5000+", "label": "Hình Ảnh"},
+            {"number": "<2s", "label": "Thời Gian Xử Lý"},
         ],
     }
     return render(request, "pages/home.html", context)

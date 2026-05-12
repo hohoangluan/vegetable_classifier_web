@@ -3,35 +3,52 @@
 {% block title %}Trang chu | VeggiClassify{% endblock %}
 
 {% block content %}
-<section class="hero-section section-card">
-    {% include "components/page_header.html" with badge="Demo Machine Learning" title="VeggiClassify" subtitle="Web demo phan loai rau cu bang mo hinh machine learning, duoc to chuc ro rang de sinh vien moi hoc Django de theo doi." %}
-    <div class="action-row">
-        <a class="button button-primary" href="{% url 'classifier:classify' %}">Thu phan loai ngay</a>
-        <a class="button button-secondary" href="{% url 'pages:pipeline' %}">Xem pipeline</a>
-    </div>
-</section>
+<div class="home-landing">
+    <section class="home-hero">
+        <div class="hero-emblem" aria-hidden="true">
+            {% include "components/icon_symbol.html" with name="book-open" %}
+        </div>
+        <h1 class="home-hero-title">{{ hero.title }}</h1>
+        <p class="home-hero-subtitle">{{ hero.subtitle }}</p>
+        <div class="action-row home-hero-actions">
+            <a class="button button-primary button-hero" href="{% url 'classifier:classify' %}">
+                <span class="button-icon" aria-hidden="true">
+                    {% include "components/icon_symbol.html" with name="upload" %}
+                </span>
+                <span>{{ hero.cta_label }}</span>
+            </a>
+        </div>
+    </section>
 
-<section class="content-section">
-    <div class="section-heading">
-        <h2>Cac khu vuc chinh</h2>
-        <p>Moi phan trong project co mot nhiem vu ro rang de tranh tron lan giua Django va ML.</p>
-    </div>
-    <div class="card-grid three-columns">
+    <section class="home-section">
+        <h2 class="home-section-title">Tính Năng Nổi Bật</h2>
+        <div class="home-feature-grid">
         {% for item in feature_cards %}
-            {% include "components/feature_card.html" with icon=item.icon title=item.title description=item.description meta=item.meta %}
+            {% include "components/feature_card.html" with icon_key=item.icon_key title=item.title description=item.description card_class="feature-card-home" %}
         {% endfor %}
-    </div>
-</section>
+        </div>
+    </section>
 
-<section class="content-section">
-    <div class="section-heading">
-        <h2>Tong quan nhanh</h2>
-        <p>Bo khung nay phu hop de mo rong them logic model that, luu lich su du doan hoac dashboard thong ke sau nay.</p>
-    </div>
-    <div class="card-grid three-columns">
+    <section class="home-usage-panel">
+        <h2 class="home-panel-title">Cách Sử Dụng</h2>
+        <div class="home-usage-grid">
+            {% for step in usage_steps %}
+            <article class="usage-step-card">
+                <span class="usage-step-number">{{ step.number }}</span>
+                <div class="usage-step-icon" aria-hidden="true">
+                    {% include "components/icon_symbol.html" with name=step.icon_key %}
+                </div>
+                <h3>{{ step.title }}</h3>
+                <p>{{ step.description }}</p>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="home-stats-grid">
         {% for item in stats %}
-            {% include "components/stat_card.html" with number=item.number label=item.label description=item.description %}
+            {% include "components/stat_card.html" with number=item.number label=item.label card_class="stat-card-home" %}
         {% endfor %}
-    </div>
-</section>
+    </section>
+</div>
 {% endblock %}
