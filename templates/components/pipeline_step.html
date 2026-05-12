@@ -1,5 +1,25 @@
-<article class="pipeline-step">
-    <span class="pipeline-number">{{ step_number }}</span>
-    <h3>{{ title }}</h3>
-    <p>{{ description }}</p>
+<article class="pipeline-stage-card">
+    <div class="pipeline-stage-grid">
+        <span class="pipeline-stage-icon is-{{ step.accent }}">
+            {% include "components/icon_symbol.html" with name=step.icon_key %}
+        </span>
+
+        <div class="pipeline-stage-content">
+            <h2>{{ step.number }}. {{ step.title }}</h2>
+            <p>{{ step.description }}</p>
+
+            <div class="pipeline-stage-details">
+                <h3>Chi tiết kỹ thuật:</h3>
+                <ul class="pipeline-stage-listing">
+                    {% for item in step.details %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {% if not forloop.last %}
+        <div class="pipeline-stage-arrow" aria-hidden="true">↓</div>
+    {% endif %}
 </article>

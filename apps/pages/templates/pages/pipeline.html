@@ -3,15 +3,79 @@
 {% block title %}Pipeline | VeggiClassify{% endblock %}
 
 {% block content %}
-<section class="section-card">
-    {% include "components/page_header.html" with badge="Luồng Machine Learning" title="Pipeline Xử Lý Và Phân Loại" subtitle="Trang này minh họa cách dữ liệu di chuyển từ form upload đến predictor, sau đó quay lại giao diện dưới dạng kết quả dễ đọc." %}
+<section class="pipeline-hero">
+    <div class="pipeline-hero-copy">
+        <h1>Pipeline Phân Loại</h1>
+        <p>Quy trình xử lý và phân loại hình ảnh rau củ từ đầu đến cuối</p>
+    </div>
 </section>
 
-<section class="content-section">
-    <div class="pipeline-grid">
-        {% for step in pipeline_steps %}
-            {% include "components/pipeline_step.html" with step_number=step.step_number title=step.title description=step.description %}
-        {% endfor %}
-    </div>
+<section class="pipeline-stage-list">
+    {% for step in pipeline_steps %}
+        {% include "components/pipeline_step.html" with step=step %}
+    {% endfor %}
+</section>
+
+<section class="pipeline-insights-grid">
+    <article class="pipeline-info-card">
+        <h2>Kiến Trúc Mô Hình</h2>
+
+        <div class="architecture-highlight-stack">
+            {% for item in architecture_highlights %}
+                <div class="architecture-highlight-card is-{{ item.accent }}">
+                    <span>{{ item.label }}</span>
+                    <strong>{{ item.value }}</strong>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="architecture-list">
+            {% for item in architecture_layers %}
+                <div class="architecture-list-row">
+                    <span>{{ item.label }}</span>
+                    <strong>{{ item.value }}</strong>
+                </div>
+            {% endfor %}
+        </div>
+    </article>
+
+    <article class="pipeline-info-card pipeline-training-card">
+        <h2>Chi Tiết Huấn Luyện</h2>
+
+        <div class="training-detail-list">
+            {% for item in training_details %}
+                <div class="training-detail-row">
+                    <span>{{ item.label }}</span>
+                    <strong>{{ item.value }}</strong>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="training-metrics-card">
+            <h3>Hiệu Suất Mô Hình</h3>
+            <div class="training-metrics-grid">
+                {% for metric in performance_metrics %}
+                    <div class="training-metric-item">
+                        <strong>{{ metric.value }}</strong>
+                        <span>{{ metric.label }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </article>
+</section>
+
+<section class="pipeline-flow-section">
+    <article class="pipeline-flow-card">
+        <h2>Sơ Đồ Luồng Xử Lý</h2>
+        <div class="pipeline-flow-list">
+            {% for node in flow_nodes %}
+                <span class="pipeline-flow-pill is-{{ node.accent }}">{{ node.label }}</span>
+                {% if not forloop.last %}
+                    <span class="pipeline-flow-arrow" aria-hidden="true">→</span>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </article>
 </section>
 {% endblock %}
