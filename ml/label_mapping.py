@@ -1,8 +1,8 @@
 LABEL_MAPPING = {
-    "carrot": "Ca rot",
-    "potato": "Khoai tay",
-    "tomato": "Ca chua",
-    "cabbage": "Bap cai",
+    "carrot": "Cà rốt",
+    "potato": "Khoai tây",
+    "tomato": "Cà chua",
+    "cabbage": "Bắp cải",
 }
 
 

@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!file) {
             preview.hidden = true;
             preview.removeAttribute("src");
-            fileName.textContent = "Chua co anh nao duoc chon.";
+            fileName.textContent = "Chưa có ảnh nào được chọn.";
             return;
         }
 

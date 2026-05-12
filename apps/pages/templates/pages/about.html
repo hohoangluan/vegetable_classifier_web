@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}Gioi thieu | VeggiClassify{% endblock %}
+{% block title %}Giới thiệu | VeggiClassify{% endblock %}
 
 {% block content %}
 <section class="section-card">
-    {% include "components/page_header.html" with badge="Project Overview" title="Gioi thieu du an" subtitle="VeggiClassify la web demo giup sinh vien hieu cach ket noi mot mo hinh machine learning vao Django ma van giu code gon, de doc." %}
+    {% include "components/page_header.html" with badge="Tổng Quan Dự Án" title="Giới Thiệu Dự Án" subtitle="VeggiClassify là web demo giúp sinh viên hiểu cách kết nối một mô hình machine learning vào Django mà vẫn giữ code gọn, dễ đọc." %}
 </section>
 
 <section class="content-section two-column-layout">
     <article class="info-card">
-        <h2>Tu tuong thiet ke</h2>
-        <p>Phan web va phan machine learning duoc tach trach nhiem: Django xu ly giao dien, routing va upload; package <code>ml/</code> xu ly predict.</p>
-        <p>Cach to chuc nay giup sinh vien de debug, de thay doi model va tranh viet toan bo logic trong <code>views.py</code>.</p>
+        <h2>Tư Tưởng Thiết Kế</h2>
+        <p>Phần web và phần machine learning được tách trách nhiệm: Django xử lý giao diện, routing và upload; package <code>ml/</code> xử lý predict.</p>
+        <p>Cách tổ chức này giúp sinh viên dễ debug, dễ thay đổi model và tránh viết toàn bộ logic trong <code>views.py</code>.</p>
     </article>
 
     <aside class="info-card">
-        <h2>Kien truc gon gang</h2>
+        <h2>Kiến Trúc Gọn Gàng</h2>
         <ul class="clean-list">
             {% for point in architecture_points %}
             <li>{{ point }}</li>

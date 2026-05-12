@@ -1,5 +1,5 @@
 <div class="upload-box">
-    <label class="upload-label" for="{{ form.image.id_for_label }}">Chon anh rau cu</label>
+    <label class="upload-label" for="{{ form.image.id_for_label }}">Chọn ảnh rau củ</label>
     {{ form.image }}
     {% if form.image.help_text %}
     <p class="helper-text">{{ form.image.help_text }}</p>
@@ -8,7 +8,7 @@
     <div class="error-text">{{ form.image.errors }}</div>
     {% endif %}
     <div class="preview-panel">
-        <img id="image-preview" src="" alt="Preview" hidden>
-        <p id="file-name">Chua co anh nao duoc chon.</p>
+        <img id="image-preview" src="" alt="Xem trước" hidden>
+        <p id="file-name">Chưa có ảnh nào được chọn.</p>
     </div>
 </div>

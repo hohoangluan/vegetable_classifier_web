@@ -60,9 +60,9 @@ def about_view(request):
     context = {
         "page_name": "about",
         "architecture_points": [
-            "Django app pages quan ly cac trang gioi thieu va minh hoa.",
-            "Django app classifier phu trach form upload, render ket qua va service.",
-            "Package ml/ chua code machine learning doc lap de giu views gon gang.",
+            "Django app pages quản lý các trang giới thiệu và minh họa.",
+            "Django app classifier phụ trách form upload, render kết quả và service.",
+            "Package ml/ chứa code machine learning độc lập để giữ views gọn gàng.",
         ],
     }
     return render(request, "pages/about.html", context)
@@ -74,23 +74,23 @@ def pipeline_view(request):
         "pipeline_steps": [
             {
                 "step_number": "01",
-                "title": "Nhan anh tu nguoi dung",
-                "description": "Anh duoc upload thong qua form trong app classifier.",
+                "title": "Nhận Ảnh Từ Người Dùng",
+                "description": "Ảnh được upload thông qua form trong app classifier.",
             },
             {
                 "step_number": "02",
-                "title": "Tien xu ly",
-                "description": "Package ml/ co the resize, normalize va chuan bi du lieu dau vao.",
+                "title": "Tiền Xử Lý",
+                "description": "Package ml/ có thể resize, normalize và chuẩn bị dữ liệu đầu vào.",
             },
             {
                 "step_number": "03",
-                "title": "Trich rut va du doan",
-                "description": "Model loader nap file trong ml_models/ va predictor tra ket qua cho Django.",
+                "title": "Trích Rút Và Dự Đoán",
+                "description": "Model loader nạp file trong ml_models/ và predictor trả kết quả cho Django.",
             },
             {
                 "step_number": "04",
-                "title": "Hien thi ket qua",
-                "description": "Classifier app nhan output va render giao dien cho nguoi dung.",
+                "title": "Hiển Thị Kết Quả",
+                "description": "Classifier app nhận output và render giao diện cho người dùng.",
             },
         ],
     }
