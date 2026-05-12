@@ -1,7 +1,3 @@
-<<<<<<< Updated upstream
-from django.shortcuts import render
-
-=======
 from __future__ import annotations
 
 import json
@@ -13,120 +9,23 @@ from django.conf import settings
 from django.shortcuts import render
 
 from ml.helper import load_config, scan_dataset
+from __future__ import annotations
+
+from functools import lru_cache
+from pathlib import Path
+
+from django.conf import settings
+from django.shortcuts import render
+
+from ml.helper import scan_dataset
 from ml.label_mapping import get_dataset_label_items, get_vietnamese_label
 
 
 DATASET_SAMPLE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp"}
-PIPELINE_CONFIG_FALLBACK = {
-    "feature": {
-        "target_size": (128, 128),
-        "preprocess_mode": "letterbox",
-        "h_bins": 32,
-        "s_bins": 32,
-        "v_bins": 32,
-        "lbp_P": 8,
-        "lbp_R": 1,
-    },
-    "transform": {
-        "use_scaler": True,
-        "use_lda": True,
-    },
-    "gmm": {
-        "n_components": 3,
-        "covariance_type": "full",
-        "reg_covar": 0.00001,
-        "random_state": 42,
-    },
-    "mahalanobis": {
-        "mode": "manual",
-        "threshold": 7.5,
-        "percentile": 95,
-        "source": "validation",
-        "reject_ood_by_default": True,
-    },
-}
 
 
 def get_dataset_root():
     return settings.BASE_DIR.parent / "dataset"
-
-
-def get_pipeline_config_path():
-    return settings.BASE_DIR / "ml" / "config" / "config.json"
-
-
-def get_pipeline_model_path():
-    return settings.BASE_DIR / "ml_models" / "vegetable_model.pkl"
-
-
-def get_pipeline_report_path():
-    return settings.BASE_DIR / "ml_models" / "vegetable_model_report.json"
-
-
-def get_pipeline_config():
-    try:
-        return load_config(get_pipeline_config_path())
-    except (FileNotFoundError, ValueError, TypeError):
-        return deepcopy(PIPELINE_CONFIG_FALLBACK)
-
-
-def get_pipeline_report():
-    report_path = get_pipeline_report_path()
-    if not report_path.exists():
-        return {}
-
-    try:
-        with report_path.open("r", encoding="utf-8") as file_obj:
-            report = json.load(file_obj)
-    except (OSError, json.JSONDecodeError):
-        return {}
-
-    return report if isinstance(report, dict) else {}
-
-
-def format_display_path(path_value, *roots):
-    if not path_value:
-        return "N/A"
-
-    path_obj = Path(path_value)
-    for root in roots:
-        root_obj = Path(root)
-        try:
-            return path_obj.relative_to(root_obj).as_posix()
-        except ValueError:
-            continue
-
-    return path_obj.as_posix()
-
-
-def format_metric_percentage(value):
-    try:
-        numeric = float(value)
-    except (TypeError, ValueError):
-        return "0.00%"
-
-    if numeric <= 1:
-        numeric *= 100
-
-    return f"{numeric:.2f}%"
-
-
-def format_enabled_flag(value):
-    return "Bật" if value else "Tắt"
-
-
-def format_mahalanobis_summary(mahalanobis_config):
-    mode = str(mahalanobis_config.get("mode", "none")).lower()
-
-    if mode == "manual":
-        return f"Manual ({mahalanobis_config.get('threshold', 'N/A')})"
-
-    if mode == "percentile":
-        percentile = mahalanobis_config.get("percentile", "N/A")
-        source = mahalanobis_config.get("source", "train")
-        return f"Percentile {percentile}% từ {source}"
-
-    return "Tắt"
 
 
 def get_dataset_samples():
@@ -163,13 +62,11 @@ def get_dataset_overview():
                 {"label": item["label"], "name": item["label_vi"], "count": 0, "ratio": 0}
                 for item in label_items
             ],
-            "class_names": [item["label"] for item in label_items],
             "dataset_splits": [
                 {"name": "Training Set", "count": "0 hình ảnh", "percentage": 0, "is_primary": True},
                 {"name": "Validation Set", "count": "0 hình ảnh", "percentage": 0},
                 {"name": "Test Set", "count": "0 hình ảnh", "percentage": 0},
             ],
-            "split_count_map": {"train": 0, "validation": 0, "test": 0},
             "stats": {
                 "total_images": 0,
                 "total_classes": len(label_items),
@@ -184,8 +81,6 @@ def get_dataset_overview():
             "label_items": label_items,
             "dataset_bars": [],
             "dataset_splits": [],
-            "class_names": [item["label"] for item in label_items],
-            "split_count_map": {"train": 0, "validation": 0, "test": 0},
             "stats": {
                 "total_images": 0,
                 "total_classes": len(label_items),
@@ -214,16 +109,11 @@ def get_dataset_overview():
         "test": "Test Set",
     }
     split_counts = dataset_df.groupby("split").size()
-    split_count_map = {
-        "train": int(split_counts.get("train", 0)),
-        "validation": int(split_counts.get("validation", 0)),
-        "test": int(split_counts.get("test", 0)),
-    }
     total_images = int(len(dataset_df))
 
     dataset_splits = []
     for split_name in ("train", "validation", "test"):
-        split_count = split_count_map[split_name]
+        split_count = int(split_counts.get(split_name, 0))
         percentage = int(round((split_count / total_images) * 100)) if total_images else 0
         dataset_splits.append(
             {
@@ -247,9 +137,7 @@ def get_dataset_overview():
     return {
         "label_items": label_items,
         "dataset_bars": dataset_bars,
-        "class_names": list(class_counts.index),
         "dataset_splits": dataset_splits,
-        "split_count_map": split_count_map,
         "stats": {
             "total_images": total_images,
             "total_classes": total_classes,
@@ -258,14 +146,20 @@ def get_dataset_overview():
         },
     }
 
->>>>>>> Stashed changes
+
 
 def home_view(request):
+    dataset_overview = get_dataset_overview()
+    stats = dataset_overview["stats"]
+
     context = {
         "page_name": "home",
         "hero": {
             "title": "Hệ Thống Phân Loại Rau Củ",
-            "subtitle": "Sử dụng công nghệ trí tuệ nhân tạo và deep learning để tự động nhận diện và phân loại các loại rau củ một cách chính xác và nhanh chóng",
+            "subtitle": (
+                "Sử dụng công nghệ trí tuệ nhân tạo và deep learning để tự động nhận diện "
+                "và phân loại các loại rau củ một cách chính xác và nhanh chóng"
+            ),
             "cta_label": "Bắt Đầu Phân Loại Ngay",
         },
         "feature_cards": [
@@ -282,7 +176,7 @@ def home_view(request):
             {
                 "icon_key": "shield",
                 "title": "Đa Dạng Loại Rau Củ",
-                "description": "Hỗ trợ phân loại nhiều loại rau củ phổ biến tại Việt Nam",
+                "description": "Hỗ trợ phân loại nhiều loại rau củ phổ biến trong tập dữ liệu hiện tại",
             },
         ],
         "usage_steps": [
@@ -306,9 +200,9 @@ def home_view(request):
             },
         ],
         "stats": [
-            {"number": "15+", "label": "Loại Rau Củ"},
+            {"number": str(stats["total_classes"]), "label": "Loại Rau Củ"},
             {"number": "95%", "label": "Độ Chính Xác"},
-            {"number": "5000+", "label": "Hình Ảnh"},
+            {"number": f"{stats['total_images']:,}", "label": "Hình Ảnh"},
             {"number": "<2s", "label": "Thời Gian Xử Lý"},
         ],
     }
@@ -518,13 +412,30 @@ def pipeline_view(request):
 
 
 def dataset_view(request):
+    dataset_overview = get_dataset_overview()
+    stats = dataset_overview["stats"]
+
     context = {
-        "page_name": "dataset",
-        "dataset_bars": [
-            {"name": "Carrot", "count": 1000, "ratio": 92},
-            {"name": "Potato", "count": 980, "ratio": 88},
-            {"name": "Tomato", "count": 940, "ratio": 84},
-            {"name": "Cabbage", "count": 860, "ratio": 76},
+        "page_name": "dataset-page",
+        "dataset_stats": [
+            {"icon_key": "image", "value": f"{stats['total_images']:,}", "label": "Tổng số hình ảnh"},
+            {"icon_key": "layers", "value": str(stats["total_classes"]), "label": "Số loại rau củ"},
+            {"icon_key": "chart", "value": str(stats["average_per_class"]), "label": "TB mỗi loại"},
+            {"icon_key": "database", "value": stats["size_display"], "label": "Dung lượng"},
         ],
+        "dataset_bars": dataset_overview["dataset_bars"],
+        "dataset_splits": dataset_overview["dataset_splits"],
+        "augmentation_methods": [
+            "Rotation (±30°)",
+            "Horizontal Flip",
+            "Vertical Flip",
+            "Zoom (0.8-1.2x)",
+            "Brightness Adjustment (±20%)",
+            "Contrast Adjustment (±20%)",
+            "Random Crop",
+            "Gaussian Noise",
+        ],
+        "dataset_filters": dataset_overview["dataset_bars"],
+        "dataset_samples": get_dataset_samples(),
     }
     return render(request, "pages/dataset.html", context)

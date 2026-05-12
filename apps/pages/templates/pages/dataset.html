@@ -1,30 +1,99 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Dataset | VeggiClassify{% endblock %}
 
 {% block content %}
-<section class="section-card">
-    {% include "components/page_header.html" with badge="Tổng Quan Dataset" title="Minh Họa Dataset" subtitle="Nơi này có thể đặt ảnh mẫu, thống kê số lượng từng lớp và mô tả cách chia train, validation, test cho bài toán phân loại rau củ." %}
+<section class="dataset-hero">
+    <div class="dataset-hero-copy">
+        <h1>Thông Tin Dataset</h1>
+        <p>Chi tiết về tập dữ liệu hình ảnh rau củ được sử dụng để huấn luyện mô hình</p>
+    </div>
 </section>
 
-<section class="content-section two-column-layout">
-    <article class="info-card">
-        <h2>Phân Bố Dữ Liệu</h2>
+<section class="dataset-stat-grid">
+    {% for item in dataset_stats %}
+        <article class="dataset-stat-card">
+            <span class="dataset-stat-icon">
+                {% include "components/icon_symbol.html" with name=item.icon_key %}
+            </span>
+            <strong>{{ item.value }}</strong>
+            <span>{{ item.label }}</span>
+        </article>
+    {% endfor %}
+</section>
+
+<section class="dataset-distribution-section">
+    <article class="dataset-distribution-card">
+        <h2>Phân Bố Dữ Liệu Theo Loại Rau Củ</h2>
         <div class="dataset-bars">
             {% for item in dataset_bars %}
                 {% include "components/dataset_bar.html" with name=item.name count=item.count ratio=item.ratio %}
             {% endfor %}
         </div>
     </article>
+</section>
 
-    <article class="info-card">
-        <h2>Thư Mục Ảnh Mẫu</h2>
-        <p>Các ảnh dataset minh họa nên đặt trong <code>static/images/dataset_samples/</code> để trang này có thể truy cập trực tiếp qua static files.</p>
-        <div class="placeholder-gallery">
-            <div class="gallery-tile">Carrot</div>
-            <div class="gallery-tile">Potato</div>
-            <div class="gallery-tile">Tomato</div>
-            <div class="gallery-tile">Cabbage</div>
+<section class="dataset-detail-grid">
+    <article class="dataset-detail-card">
+        <h2>Phân Chia Dữ Liệu</h2>
+        <div class="dataset-split-list">
+            {% for item in dataset_splits %}
+                <div class="dataset-split-card">
+                    <div class="dataset-split-head">
+                        <div class="dataset-split-title">
+                            {% if item.is_primary %}
+                                <span class="dataset-split-dot" aria-hidden="true"></span>
+                            {% endif %}
+                            <strong>{{ item.name }}</strong>
+                        </div>
+                        <span class="dataset-split-percent">{{ item.percentage }}%</span>
+                    </div>
+                    <p>{{ item.count }}</p>
+                    <div class="dataset-split-track" aria-hidden="true">
+                        <div class="dataset-split-fill{% if item.is_primary %} is-primary{% endif %}" style="width: {{ item.percentage }}%;"></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </article>
+
+    <article class="dataset-detail-card">
+        <h2>Kỹ Thuật Tăng Cường Dữ Liệu</h2>
+        <p class="dataset-augmentation-copy">Các phương pháp được áp dụng để tăng số lượng và đa dạng của dữ liệu huấn luyện:</p>
+        <div class="dataset-augmentation-grid">
+            {% for item in augmentation_methods %}
+                <span class="dataset-augmentation-pill">{{ item }}</span>
+            {% endfor %}
+        </div>
+    </article>
+</section>
+
+<section class="dataset-gallery-section">
+    <article class="dataset-gallery-card">
+        <h2>Hình Ảnh Mẫu Trong Dataset</h2>
+
+        <div class="dataset-filter-label">
+            <span class="dataset-filter-icon">
+                {% include "components/icon_symbol.html" with name="funnel" %}
+            </span>
+            <span>Lọc theo loại:</span>
+        </div>
+
+        <div class="dataset-filter-row">
+            {% for item in dataset_filters %}
+                <span class="dataset-filter-pill">{{ item.name }} ({{ item.count }})</span>
+            {% endfor %}
+        </div>
+
+        <div class="dataset-sample-grid">
+            {% for item in dataset_samples %}
+                <figure class="dataset-sample-tile">
+                    <img src="{% static item.path %}" alt="{{ item.title }}" loading="lazy">
+                </figure>
+            {% empty %}
+                <div class="dataset-sample-empty">Chưa có ảnh mẫu trong thư mục `static/images/dataset_samples/`.</div>
+            {% endfor %}
         </div>
     </article>
 </section>

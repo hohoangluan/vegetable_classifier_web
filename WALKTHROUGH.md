@@ -2,63 +2,44 @@
 
 ## 1. Project này là gì?
 
-VeggiClassify là một web demo dùng Django để minh họa bài toán phân loại rau củ bằng ảnh đầu vào.
+VeggiClassify là một web Django dùng để minh họa bài toán phân loại rau củ bằng ảnh đầu vào. Điểm quan trọng của project là phần giao diện web và phần machine learning được tách trách nhiệm rõ ràng:
 
-Ý tưởng rất đơn giản:
+- Django lo giao diện, form upload, điều hướng trang và render kết quả.
+- Package `ml/` lo preprocessing, feature extraction, train model, load model và dự đoán.
 
-- Người dùng mở website.
-- Người dùng tải lên một ảnh rau củ.
-- Django nhận ảnh đó.
-- Django gọi sang module machine learning.
-- Module ML trả về kết quả dự đoán.
-- Website hiển thị lại kết quả trên giao diện.
+Nhờ cách tách này, người học có thể đọc riêng phần web hoặc phần machine learning mà không bị lẫn logic.
 
-Project này phù hợp cho sinh viên học:
+## 2. Luồng hoạt động tổng quát
 
-- Django cơ bản
-- Cách tổ chức project web rõ ràng
-- Cách tách phần web và phần machine learning
-- Cách gọi model ML từ Django
-
-Điểm quan trọng của project là: phần Django và phần ML được tách trách nhiệm rõ ràng để dễ đọc, dễ sửa, dễ mở rộng.
-
-## 2. Tổng quan luồng hoạt động
-
-Sơ đồ luồng tổng quát:
+Flow hiện tại của project:
 
 ```text
-Người dùng mở website
+Người dùng mở trang /classify/
     ↓
-Vào trang /classify/
-    ↓
-Upload ảnh rau củ
+Tải lên ảnh rau củ
     ↓
 Django nhận request POST
     ↓
-Form kiểm tra dữ liệu ảnh
+apps/classifier/services.py lưu ảnh vào media/uploads/
     ↓
-Ảnh được lưu vào media/uploads/
+services.py gọi ml.predictor.predict(image_path)
     ↓
-apps/classifier/services.py gọi ml/predictor.py
+predictor load VegetableGMMModel từ ml_models/vegetable_model.pkl
     ↓
-predict(image_path) xử lý ảnh và dự đoán
+model.predict(image_path) trả về dictionary kết quả
     ↓
-ML trả về dictionary kết quả
+Django chuẩn hóa dữ liệu hiển thị
     ↓
-Django nhận output
-    ↓
-Render ra giao diện result.html
+Render kết quả ngay trên trang classify và lưu session cho trang result
 ```
 
-Nếu nói ngắn gọn hơn thì project hoạt động theo công thức:
+Nói ngắn gọn:
 
 ```text
-Web Django nhận ảnh -> gọi hàm predict() -> nhận kết quả -> hiển thị cho người dùng
+Web Django nhận ảnh -> gọi predict(image_path) -> ML trả kết quả -> giao diện hiển thị lại
 ```
 
-## 3. Cây thư mục tổng quan
-
-Project chính có cấu trúc như sau:
+## 3. Cây thư mục quan trọng
 
 ```text
 vegetable_classifier_web/
@@ -74,876 +55,194 @@ vegetable_classifier_web/
 ├── manage.py
 ├── requirements.txt
 ├── README.md
-└── WALKTHROUGH.md
+├── WALKTHROUGH.md
+└── ML_WALKTHROUGH.md
 ```
 
-Giải thích ngắn gọn:
+Giải thích nhanh:
 
-- `config/`: nơi chứa cấu hình chung của Django project.
-- `apps/`: nơi chứa các Django app.
-- `apps/pages/`: các trang thông tin như home, about, pipeline, dataset.
-- `apps/classifier/`: phần upload ảnh và gọi module ML để phân loại.
-- `ml/`: package Python chứa logic machine learning.
-- `ml_models/`: nơi lưu file model đã train.
-- `templates/`: HTML dùng chung cho toàn project.
-- `static/`: CSS, JS, hình ảnh giao diện.
-- `media/`: nơi lưu file do người dùng upload.
-- `manage.py`: file lệnh chính để chạy Django.
-- `requirements.txt`: danh sách thư viện cần cài.
-- `README.md`: mô tả nhanh project.
-- `WALKTHROUGH.md`: file hướng dẫn chi tiết này.
+- `config/`: cấu hình Django.
+- `apps/pages/`: các trang giới thiệu, pipeline, dataset.
+- `apps/classifier/`: upload ảnh và hiển thị kết quả phân loại.
+- `ml/`: toàn bộ logic machine learning.
+- `ml_models/`: nơi lưu artifact model sau train.
+- `media/uploads/`: ảnh người dùng upload.
 
-## 4. Vai trò của thư mục config/
+## 4. Vai trò của app `pages`
 
-Thư mục `config/` là trung tâm cấu hình của Django project.
+App `pages` chịu trách nhiệm cho các trang nội dung:
 
-Các file quan trọng:
+- `home`
+- `about`
+- `pipeline`
+- `dataset`
 
-- `config/settings.py`: cấu hình project, app, template, static, media, database.
-- `config/urls.py`: nơi nối URL tổng cho toàn bộ website.
-- `config/asgi.py`: dùng khi chạy hoặc deploy theo chuẩn ASGI.
-- `config/wsgi.py`: dùng khi chạy hoặc deploy theo chuẩn WSGI.
+File `apps/pages/views.py` chuẩn bị context cho các trang này. Điểm đáng chú ý trong project hiện tại:
 
-### `config/settings.py` dùng để làm gì?
+- Trang `dataset` không dùng list cứng nữa.
+- Dữ liệu label và số lượng lớp được lấy từ dataset thật.
+- Tên hiển thị trên UI là tiếng Việt thông qua `ml/label_mapping.py`.
 
-Đây là file mà người mới sẽ gặp rất nhiều khi học Django. Trong project này, file đó đang đảm nhiệm:
+## 5. Vai trò của app `classifier`
 
-- Khai báo `INSTALLED_APPS`
-- Cấu hình thư mục `templates/`
-- Cấu hình `STATIC_URL`, `STATICFILES_DIRS`
-- Cấu hình `MEDIA_URL`, `MEDIA_ROOT`
-- Cấu hình database SQLite
+App `classifier` là nơi nối web với machine learning.
 
-Ví dụ: vì app nằm trong thư mục `apps/`, project đang import theo dạng:
+### `apps/classifier/views.py`
 
-```python
-"apps.pages.apps.PagesConfig"
-"apps.classifier.apps.ClassifierConfig"
-```
+- Render form upload ở `classify_view()`.
+- Gọi `classify_uploaded_image()` khi người dùng submit ảnh.
+- Đưa danh sách rau hỗ trợ lên UI từ `get_dataset_label_items()`.
 
-Nhờ vậy Django biết cần nạp app nào khi chạy.
+### `apps/classifier/services.py`
 
-### `config/urls.py` dùng để làm gì?
+Đây là lớp trung gian giữa Django và ML:
 
-Đây là nơi gắn các app vào project.
+1. Lưu ảnh vào `media/uploads/`
+2. Gọi `ml.predictor.predict(image_path)`
+3. Chuẩn hóa output để giao diện dùng được:
+   - `image_url`
+   - `confidence_percent`
+   - `processing_time`
+   - `model_name`
 
-Ví dụ trong project này:
+Nhờ vậy, phần view Django không cần biết chi tiết bên trong model.
 
-- URL gốc `/` sẽ đi vào app `pages`
-- URL `/classify/` sẽ đi vào app `classifier`
+## 6. Vai trò của package `ml/`
 
-Nói dễ hiểu:
-
-```text
-config/urls.py giống như bảng điều phối giao thông của cả website
-```
-
-### `asgi.py` và `wsgi.py`
-
-Người mới học chưa cần chỉnh nhiều hai file này.
-
-Bạn chỉ cần nhớ:
-
-- Chúng phục vụ việc chạy và deploy project.
-- Thường để nguyên mặc định.
-- Chỉ sửa khi bạn thật sự hiểu quá trình triển khai ứng dụng.
-
-## 5. Vai trò của app pages/
-
-App `pages` dùng cho các trang thông tin.
-
-Điểm quan trọng:
-
-- App này không xử lý machine learning.
-- App này chủ yếu render các trang để giới thiệu project và giải thích pipeline.
+Package `ml/` là phần machine learning độc lập.
 
 Các file chính:
 
-- `apps/pages/views.py`: chứa các hàm render trang.
-- `apps/pages/urls.py`: định nghĩa URL cho app `pages`.
-- `apps/pages/templates/pages/home.html`: trang chủ.
-- `apps/pages/templates/pages/about.html`: trang giới thiệu.
-- `apps/pages/templates/pages/pipeline.html`: trang mô tả pipeline.
-- `apps/pages/templates/pages/dataset.html`: trang mô tả dataset.
+- `ml/config/config.json`: cấu hình feature, transform, GMM, Mahalanobis.
+- `ml/helper.py`: scan dataset, load config, helper GMM và Mahalanobis.
+- `ml/preprocessing.py`: đọc ảnh, resize hoặc letterbox.
+- `ml/feature_extraction.py`: trích đặc trưng HSV + LBP và transform feature.
+- `ml/model.py`: class `VegetableGMMModel` với `train()`, `evaluate()`, `predict()`.
+- `ml/model_loader.py`: tạo model từ config và load model đã train từ `ml_models/vegetable_model.pkl`.
+- `ml/predictor.py`: public entrypoint `predict(image_path)` mà Django gọi.
+- `ml/train_model.py`: script train model và lưu artifact.
+- `ml/label_mapping.py`: map label nội bộ sang tên tiếng Việt.
 
-### `pages/views.py` làm gì?
+Chi tiết sâu hơn về phần này nằm trong [ML_WALKTHROUGH.md](ML_WALKTHROUGH.md).
 
-File này chứa các hàm như:
+## 7. Artifact trong `ml_models/`
 
-- `home_view()`
-- `about_view()`
-- `pipeline_view()`
-- `dataset_view()`
+Thư mục `ml_models/` hiện dùng các file chính:
 
-Các hàm này thường chỉ làm việc nhẹ:
+- `vegetable_model.pkl`: artifact chuẩn để predictor load và suy luận.
+- `vegetable_model_report.json`: báo cáo sau khi train.
 
-- Nhận request
-- Tạo context nếu cần
-- Render template HTML
-
-Ví dụ tư duy:
+Luồng đúng là:
 
 ```text
-Người dùng vào /about/ -> Django gọi about_view() -> about_view() render about.html
+python ml/train_model.py
+    -> tạo vegetable_model.pkl
+    -> tạo vegetable_model_report.json
+    -> predictor dùng lại vegetable_model.pkl
 ```
 
-### Nếu muốn sửa nội dung trang giới thiệu thì chỉnh file nào?
+Nếu `vegetable_model.pkl` còn là placeholder, rỗng hoặc không phải `VegetableGMMModel` hợp lệ, predictor sẽ fail-fast với message rõ ràng.
 
-Bạn thường sẽ chỉnh:
+## 8. Dataset và label
 
-- `apps/pages/templates/pages/about.html`
-
-Nếu muốn sửa dữ liệu context được truyền sang template thì chỉnh thêm:
-
-- `apps/pages/views.py`
-
-### Nếu muốn thêm một trang mới trong app pages thì sửa gì?
-
-Bạn cần làm 4 việc:
-
-1. Tạo file template mới trong `apps/pages/templates/pages/`
-2. Thêm view mới trong `apps/pages/views.py`
-3. Thêm URL mới trong `apps/pages/urls.py`
-4. Nếu muốn hiện trên menu thì thêm link trong `templates/components/navbar.html`
-
-## 6. Vai trò của app classifier/
-
-App `classifier` là phần quan trọng nhất của project, vì đây là nơi xử lý chức năng phân loại ảnh.
-
-App này phụ trách:
-
-- Hiển thị form upload ảnh
-- Nhận ảnh từ người dùng
-- Gọi service trung gian
-- Service gọi module ML
-- Nhận kết quả và hiển thị lên giao diện
-
-Các file chính:
-
-- `apps/classifier/views.py`: nhận request, kiểm tra form, render trang.
-- `apps/classifier/forms.py`: định nghĩa form upload ảnh.
-- `apps/classifier/models.py`: nơi có thể tạo model database nếu muốn lưu lịch sử sau này.
-- `apps/classifier/services.py`: xử lý logic trung gian, gọi ML.
-- `apps/classifier/urls.py`: định nghĩa URL của phần classify.
-- `apps/classifier/templates/classifier/classify.html`: trang upload ảnh.
-- `apps/classifier/templates/classifier/result.html`: trang hiển thị kết quả.
-
-### `classifier/views.py` làm gì?
-
-Trong project này, `views.py` chủ yếu làm đúng tinh thần Django:
-
-- Nhận request GET hoặc POST
-- Tạo form
-- Kiểm tra form hợp lệ hay không
-- Nếu hợp lệ thì gọi `services.py`
-- Lấy kết quả từ service
-- Render giao diện cho người dùng
-
-Điều rất quan trọng:
+Dataset mặc định của project nằm ngoài Django root:
 
 ```text
-Không nên viết toàn bộ logic machine learning trong views.py
+d:\Study\ML\code\dataset
 ```
 
-Lý do:
+Nó gồm 3 split:
 
-- `views.py` sẽ rất dài và khó đọc
-- Khó tái sử dụng code
-- Khó bảo trì khi thay model
-- Trộn lẫn trách nhiệm của web và ML
+- `train`
+- `validation`
+- `test`
 
-### `classifier/forms.py` làm gì?
+Internal label của model lấy trực tiếp từ tên thư mục con trong `dataset/train`. UI không dùng tên tiếng Anh này để hiển thị trực tiếp mà map sang tiếng Việt qua `ml/label_mapping.py`.
 
-File này định nghĩa form upload ảnh.
+Điều này giúp:
 
-Form giúp:
+- ML giữ label ổn định theo dataset thật
+- UI hiển thị thân thiện bằng tiếng Việt
+- Trang `dataset` và trang `classify` bám đúng dữ liệu đang train
 
-- Kiểm tra request có file ảnh hay không
-- Quản lý trường nhập liệu sạch hơn
-- Giúp giao diện render form dễ hơn
+## 9. Train model trong project hiện tại
 
-### `classifier/models.py` làm gì?
-
-Hiện tại file này đang để dạng khung cơ bản.
-
-Trong tương lai, bạn có thể dùng file này để tạo các model database như:
-
-- lịch sử phân loại
-- thông tin ảnh đã upload
-- thời gian dự đoán
-- người dùng nào đã dự đoán
-
-Nếu project chỉ là demo đơn giản thì chưa nhất thiết phải dùng database cho phần classifier.
-
-### `classifier/services.py` làm gì?
-
-Đây là file rất đáng chú ý.
-
-Nhiệm vụ của `services.py`:
-
-- Lưu ảnh upload vào `media/uploads/`
-- Tạo đường dẫn của ảnh
-- Gọi `ml.predictor.predict(image_path)`
-- Nhận kết quả từ ML
-- Trả kết quả lại cho view
-
-Nói dễ hiểu:
-
-```text
-services.py là chiếc cầu nối giữa Django và machine learning
-```
-
-### Nguyên tắc quan trọng của app classifier
-
-- `views.py` chỉ nên điều phối request/response.
-- `services.py` nên chứa logic trung gian.
-- `ml/` mới là nơi xử lý machine learning.
-
-Đây là cách tổ chức rất tốt cho project học tập lẫn project thật.
-
-## 7. Vai trò của thư mục ml/
-
-Thư mục `ml/` không phải là Django app.
-
-Đây chỉ là một Python package bình thường, dùng để chứa logic machine learning độc lập.
-
-Ý tưởng quan trọng:
-
-```text
-Django không cần biết bên trong model ML phức tạp ra sao.
-Django chỉ cần gọi predict(image_path) và nhận output.
-```
-
-Các file chính:
-
-- `ml/predictor.py`: chứa hàm `predict(image_path)`, đây là đầu vào chính mà Django gọi.
-- `ml/preprocessing.py`: xử lý ảnh đầu vào, ví dụ đọc ảnh, resize, normalize.
-- `ml/feature_extraction.py`: trích xuất đặc trưng nếu dùng HOG, HSV, LBP hoặc đặc trưng thủ công.
-- `ml/model_loader.py`: load model, scaler, label encoder.
-- `ml/label_mapping.py`: ánh xạ nhãn từ tiếng Anh sang tiếng Việt.
-
-### `ml/predictor.py` là file quan trọng nhất
-
-Trong project hiện tại, Django đang gọi:
-
-```python
-from ml.predictor import predict
-```
-
-Sau đó service sẽ chạy:
-
-```python
-predict(image_path)
-```
-
-Hiện tại `predict()` đang là hàm giả lập để demo luồng hoạt động.
-
-Ví dụ output mẫu:
-
-```python
-{
-    "label": "carrot",
-    "label_vi": "Cà rốt",
-    "confidence": 0.92
-}
-```
-
-### `ml/preprocessing.py`
-
-Nếu dùng model thật, đây là nơi bạn có thể viết các bước như:
-
-- đọc ảnh từ đường dẫn
-- resize ảnh về kích thước model yêu cầu
-- chuyển màu RGB/BGR
-- normalize pixel
-- chuyển ảnh thành tensor hoặc vector
-
-### `ml/feature_extraction.py`
-
-Nếu bạn dùng machine learning kiểu truyền thống thay vì deep learning, đây là nơi có thể trích xuất:
-
-- HOG
-- HSV histogram
-- LBP
-- color features
-- shape features
-
-Nếu sau này bạn dùng CNN end-to-end thì file này có thể đơn giản hơn hoặc chỉ làm bước trung gian.
-
-### `ml/model_loader.py`
-
-Đây là nơi tập trung việc load tài nguyên ML.
-
-Ví dụ:
-
-- model chính
-- scaler
-- label encoder
-
-Tách riêng việc load model ra file này giúp:
-
-- code gọn hơn
-- dễ thay model
-- dễ cache model
-- dễ debug lỗi load file
-
-### `ml/label_mapping.py`
-
-File này giúp ánh xạ:
-
-- `carrot` -> `Cà rốt`
-- `potato` -> `Khoai tây`
-- `tomato` -> `Cà chua`
-
-Nhờ vậy giao diện có thể hiển thị thân thiện hơn thay vì chỉ dùng label tiếng Anh.
-
-## 8. Vai trò của thư mục ml_models/
-
-Thư mục `ml_models/` dùng để chứa các file model đã train.
-
-Hiện tại project đang chuẩn bị sẵn chỗ cho:
-
-- `vegetable_model.pkl`
-- `scaler.pkl`
-- `label_encoder.pkl`
-
-Nếu bạn dùng TensorFlow hoặc Keras thì có thể thay bằng:
-
-- `vegetable_model.h5`
-- `vegetable_model.keras`
-
-Nếu bạn dùng PyTorch thì có thể thay bằng:
-
-- `vegetable_model.pt`
-- `vegetable_model.pth`
-
-### Khi thay model thật thì thường phải chỉnh các file nào?
-
-- `ml/model_loader.py`
-- `ml/preprocessing.py`
-- `ml/predictor.py`
-
-Lý do:
-
-- model mới có cách load khác
-- model mới có input khác
-- model mới có cách trả nhãn và độ tin cậy khác
-
-## 9. Vai trò của templates/
-
-Thư mục `templates/` chứa layout và component dùng chung cho toàn project.
-
-Các file chính:
-
-- `templates/base.html`: layout gốc của toàn bộ website.
-- `templates/layouts/main_layout.html`: layout phụ nếu muốn tái sử dụng thêm.
-- `templates/components/navbar.html`: thanh điều hướng.
-- `templates/components/footer.html`: footer.
-- `templates/components/page_header.html`: tiêu đề đầu trang.
-- `templates/components/feature_card.html`: card tính năng.
-- `templates/components/stat_card.html`: card thống kê.
-- `templates/components/pipeline_step.html`: card từng bước pipeline.
-- `templates/components/upload_box.html`: khung upload ảnh.
-- `templates/components/result_panel.html`: khung hiển thị kết quả.
-- `templates/components/dataset_bar.html`: thanh hiển thị phân bố dữ liệu.
-
-### `base.html` có vai trò gì?
-
-Đây là khung HTML chung cho các trang.
-
-Nó thường chứa:
-
-- thẻ `<head>`
-- link CSS
-- navbar
-- footer
-- block nội dung như `{% block content %}`
-
-Nhờ `base.html`, các trang con chỉ cần tập trung vào phần nội dung chính.
-
-### Cách chỉnh navbar
-
-Nếu muốn sửa menu, tên web, thêm link:
-
-- Chỉnh `templates/components/navbar.html`
-
-Nếu muốn đổi style navbar:
-
-- Chỉnh `static/css/components.css`
-
-### Cách chỉnh card và tiêu đề trang
-
-Nếu muốn sửa cấu trúc card:
-
-- `templates/components/feature_card.html`
-- `templates/components/stat_card.html`
-- `templates/components/pipeline_step.html`
-
-Nếu muốn sửa phần header đầu trang:
-
-- `templates/components/page_header.html`
-
-## 10. Vai trò của static/
-
-Thư mục `static/` chứa tài nguyên giao diện.
-
-Đây là nơi bạn sẽ chỉnh nhiều nếu muốn thay đổi giao diện web.
-
-### `static/css/`
-
-Các file chính:
-
-- `static/css/variables.css`: biến màu, font, shadow, bo góc.
-- `static/css/base.css`: style nền tảng.
-- `static/css/layout.css`: container, grid, khoảng cách, bố cục.
-- `static/css/components.css`: style của navbar, card, upload box, button.
-- `static/css/pages.css`: style riêng cho từng trang.
-- `static/css/responsive.css`: responsive cho mobile và tablet.
-
-### Chỉnh file nào trong các trường hợp hay gặp?
-
-Nếu muốn đổi màu chủ đạo:
-
-- Chỉnh `static/css/variables.css`
-
-Nếu muốn sửa card, navbar, upload box:
-
-- Chỉnh `static/css/components.css`
-
-Nếu muốn sửa layout trang dataset hoặc pipeline:
-
-- Chỉnh `static/css/pages.css`
-
-Nếu muốn sửa cách hiển thị trên điện thoại:
-
-- Chỉnh `static/css/responsive.css`
-
-### `static/js/`
-
-Các file chính:
-
-- `static/js/main.js`: JS chung cho toàn site.
-- `static/js/upload_preview.js`: xem trước ảnh trước khi upload.
-- `static/js/active_nav.js`: highlight menu hiện tại.
-
-### `static/images/`
-
-Các thư mục con:
-
-- `static/images/logo/`: logo web.
-- `static/images/icons/`: icon giao diện.
-- `static/images/dataset_samples/`: ảnh minh họa dataset.
-- `static/images/pipeline/`: ảnh minh họa pipeline.
-- `static/images/ui/`: ảnh placeholder hoặc empty state.
-
-## 11. Vai trò của media/
-
-Thư mục `media/` là nơi chứa file do người dùng upload trong lúc dùng web.
-
-Ở project này, ảnh upload được lưu tại:
-
-- `media/uploads/`
-
-Điểm rất quan trọng cần phân biệt:
-
-- `static/`: file cố định của hệ thống
-- `media/`: file phát sinh từ người dùng
-
-Ví dụ:
-
-- logo web nên để trong `static/images/logo/`
-- ảnh người dùng vừa upload để dự đoán nên nằm trong `media/uploads/`
-
-## 12. Luồng xử lý phân loại ảnh chi tiết
-
-Phần này đi chậm từng bước để người mới nhìn được “đường đi” của dữ liệu.
-
-### Bước 1: Người dùng vào `/classify/`
-
-URL này được khai báo trong:
-
-- `apps/classifier/urls.py`
-
-### Bước 2: `classify.html` hiển thị form upload ảnh
-
-Template chính là:
-
-- `apps/classifier/templates/classifier/classify.html`
-
-Trong template này có form để chọn file ảnh.
-
-### Bước 3: Người dùng chọn ảnh và submit
-
-Khi người dùng bấm nút gửi:
-
-- trình duyệt gửi request `POST`
-- file ảnh đi kèm trong `request.FILES`
-
-### Bước 4: `classifier/views.py` nhận request POST
-
-View phụ trách:
-
-- tạo `ImageUploadForm`
-- kiểm tra request có hợp lệ không
-
-### Bước 5: `forms.py` kiểm tra dữ liệu ảnh
-
-`forms.py` giúp đảm bảo:
-
-- trường upload tồn tại
-- dữ liệu đi vào đúng kiểu ảnh
-
-### Bước 6: Ảnh được lưu vào `media/uploads/`
-
-Việc này đang được xử lý trong:
-
-- `apps/classifier/services.py`
-
-### Bước 7: `views.py` gọi `classifier/services.py`
-
-View không trực tiếp làm ML.
-
-Thay vào đó:
-
-- view gọi service
-- service xử lý bước trung gian
-
-### Bước 8: `services.py` gọi `ml/predictor.py`
-
-Service chạy hàm:
-
-```python
-predict(image_path)
-```
-
-### Bước 9: `predictor.py` gọi `preprocessing.py`
-
-Nếu dùng model thật, đây là lúc ảnh được:
-
-- đọc
-- resize
-- normalize
-- chuyển về đúng format đầu vào
-
-### Bước 10: `predictor.py` load model từ `ml_models/` và dự đoán
-
-Thông thường:
-
-- `model_loader.py` load model
-- `predictor.py` gọi model để dự đoán
-
-### Bước 11: Kết quả trả về dạng dictionary
-
-Ví dụ:
-
-```python
-{
-    "label": "carrot",
-    "label_vi": "Cà rốt",
-    "confidence": 0.92
-}
-```
-
-### Bước 12: Django render kết quả ra giao diện
-
-Project hiện tại đang dùng:
-
-- `result.html`
-
-View sẽ nhận output rồi render lại cho người dùng xem.
-
-## 13. Cách chỉnh sửa giao diện
-
-Đây là phần sinh viên thường đụng vào nhiều nhất.
-
-### Muốn sửa navbar
-
-Chỉnh:
-
-- `templates/components/navbar.html`
-- `static/css/components.css`
-
-### Muốn sửa trang chủ
-
-Chỉnh:
-
-- `apps/pages/templates/pages/home.html`
-
-Nếu cần style riêng:
-
-- `static/css/pages.css`
-
-### Muốn sửa trang phân loại
-
-Chỉnh:
-
-- `apps/classifier/templates/classifier/classify.html`
-- `templates/components/upload_box.html`
-- `templates/components/result_panel.html`
-
-Nếu cần sửa style:
-
-- `static/css/components.css`
-- `static/css/pages.css`
-
-### Muốn sửa trang pipeline
-
-Chỉnh:
-
-- `apps/pages/templates/pages/pipeline.html`
-
-Nếu muốn sửa giao diện từng bước:
-
-- `templates/components/pipeline_step.html`
-
-### Muốn sửa trang dataset
-
-Chỉnh:
-
-- `apps/pages/templates/pages/dataset.html`
-
-Nếu muốn đổi card hoặc thanh thống kê:
-
-- `templates/components/stat_card.html`
-- `templates/components/dataset_bar.html`
-
-## 14. Cách thêm một trang mới
-
-Ví dụ muốn thêm trang `Contact`.
-
-### Bước 1: Tạo template mới
-
-Tạo file:
-
-```text
-apps/pages/templates/pages/contact.html
-```
-
-### Bước 2: Thêm view trong `apps/pages/views.py`
-
-```python
-from django.shortcuts import render
-
-
-def contact_view(request):
-    return render(request, "pages/contact.html")
-```
-
-### Bước 3: Thêm URL trong `apps/pages/urls.py`
-
-```python
-path("contact/", views.contact_view, name="contact")
-```
-
-### Bước 4: Thêm link trong navbar
-
-Chỉnh:
-
-- `templates/components/navbar.html`
-
-Tóm lại, khi thêm trang mới bạn thường đụng vào:
-
-- template
-- view
-- url
-- navbar
-
-## 15. Cách thay model giả lập bằng model thật
-
-Hiện tại `ml/predictor.py` đang có thể trả kết quả giả lập để minh họa luồng hoạt động.
-
-Muốn thay bằng model thật, bạn có thể làm theo các bước sau.
-
-### Bước 1: Đưa file model đã train vào `ml_models/`
-
-Ví dụ:
-
-- `vegetable_model.pkl`
-- `vegetable_model.h5`
-- `vegetable_model.pt`
-
-### Bước 2: Chỉnh `ml/model_loader.py`
-
-Ở đây bạn viết code để load:
-
-- model
-- scaler
-- label encoder
-
-Ví dụ:
-
-- dùng `joblib.load()` cho `.pkl`
-- dùng `tensorflow.keras.models.load_model()` cho `.h5`
-- dùng `torch.load()` cho `.pt`
-
-### Bước 3: Chỉnh `ml/preprocessing.py`
-
-Bạn phải xử lý ảnh đúng theo yêu cầu model:
-
-- kích thước bao nhiêu
-- chuẩn hóa thế nào
-- RGB hay BGR
-- cần tensor hay vector
-
-### Bước 4: Chỉnh `ml/predictor.py`
-
-Tại đây bạn sẽ:
-
-- gọi `prepare_image()`
-- load model bằng `model_loader.py`
-- chạy `model.predict()`
-- lấy nhãn dự đoán
-- đổi sang tiếng Việt nếu cần
-
-### Bước 5: Giữ nguyên format output
-
-Điều rất quan trọng là dù thay model bên trong, đầu ra vẫn nên giữ dạng:
-
-```python
-{
-    "label": "...",
-    "label_vi": "...",
-    "confidence": ...
-}
-```
-
-Lý do:
-
-- Django không phải sửa quá nhiều
-- template `result.html` vẫn dùng lại được
-- project ổn định hơn
-
-## 16. Cách chạy project local
-
-Các lệnh cơ bản:
+Project đã có sẵn script train:
 
 ```bash
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-python manage.py makemigrations
-python manage.py migrate
-python manage.py runserver
+python ml/train_model.py
 ```
 
-Sau đó mở trình duyệt:
+Script này sẽ:
 
-```text
-http://127.0.0.1:8000/
-```
+1. Đọc dataset root
+2. Kiểm tra label mapping tiếng Việt
+3. Quét dữ liệu bằng `scan_dataset()`
+4. Tạo `VegetableGMMModel` từ `config.json`
+5. Train trên split `train`
+6. Dùng `validation` để hỗ trợ Mahalanobis threshold nếu config yêu cầu
+7. Evaluate trên `test` nếu có
+8. Lưu model và report vào `ml_models/`
 
-Gợi ý thực tế:
+Các tham số CLI chính:
 
-- Nếu project chưa có model database riêng thì `makemigrations` có thể chưa tạo gì mới, điều đó là bình thường.
-- `migrate` vẫn nên chạy để Django tạo các bảng hệ thống mặc định.
+- `--dataset-root`
+- `--config`
+- `--output-model`
+- `--output-report`
 
-## 17. Những file người mới thường chỉnh
+## 10. Predict trong project hiện tại
 
-Đây là nhóm file thân thiện với người mới học và thường là nơi nên bắt đầu.
+Sau khi đã có artifact train đúng:
 
-- `apps/pages/templates/pages/home.html`
-- `apps/pages/templates/pages/about.html`
-- `apps/pages/templates/pages/pipeline.html`
-- `apps/pages/templates/pages/dataset.html`
-- `apps/classifier/templates/classifier/classify.html`
-- `templates/components/navbar.html`
-- `templates/components/upload_box.html`
-- `templates/components/result_panel.html`
-- `static/css/variables.css`
-- `static/css/components.css`
-- `static/css/pages.css`
-- `ml/predictor.py`
-- `ml/preprocessing.py`
+1. Django gọi `ml.predictor.predict(image_path)`
+2. Predictor dùng `load_trained_model()`
+3. Loader load `vegetable_model.pkl`
+4. Model chạy `predict(image_path)`
+5. Predictor chuẩn hóa output:
+   - `label`
+   - `label_vi`
+   - `confidence`
+   - metadata khác nếu có
 
-Vì sao nên bắt đầu ở đây?
+Đây là contract quan trọng vì Django đang phụ thuộc vào nó. Nếu sửa model/predictor sau này, nên giữ nguyên format output này để không làm vỡ phần web.
 
-- Dễ thấy kết quả ngay trên giao diện
-- Ít rủi ro làm hỏng cấu trúc project
-- Giúp hiểu rõ luồng hoạt động hơn
+## 11. Các tài liệu nên đọc tiếp
 
-## 18. Những file không nên chỉnh tùy tiện
+- [README.md](README.md): bắt đầu nhanh, cách chạy project.
+- [ML_WALKTHROUGH.md](ML_WALKTHROUGH.md): riêng phần machine learning, training, artifact, label và flow predict.
 
-Người mới không nên sửa lung tung các file sau nếu chưa hiểu rõ:
-
-- `config/settings.py`
-- `config/urls.py`
-- `manage.py`
-- `config/asgi.py`
-- `config/wsgi.py`
-- các file migration nếu sau này project có tạo migrations
-
-Giải thích:
-
-- `settings.py`: sai một dòng có thể làm project không chạy.
-- `urls.py`: sai route có thể làm mất đường dẫn của cả app.
-- `manage.py`: gần như không cần sửa.
-- `asgi.py`, `wsgi.py`: chủ yếu phục vụ deploy.
-- migration files: không nên sửa tay nếu chưa hiểu cách Django quản lý database schema.
-
-## 19. Nguyên tắc thiết kế project
-
-Project này được tổ chức dựa trên một số nguyên tắc rất thực tế.
-
-- Tách Django và ML rõ ràng.
-- `views.py` không chứa toàn bộ logic xử lý model.
-- `services.py` làm trung gian giữa web và ML.
-- `ml/` chỉ tập trung vào xử lý dự đoán.
-- `templates/components/` giúp tái sử dụng giao diện.
-- `static/css/` được chia nhỏ để dễ chỉnh sửa.
-- `media/` chỉ dùng cho file người dùng upload.
-
-Nếu nhớ được các nguyên tắc này, bạn sẽ dễ giữ project sạch khi mở rộng thêm tính năng.
-
-## 20. Tóm tắt cho người mới
-
-Nếu muốn sửa nội dung trang:
-
-- vào `templates`
+## 12. Khi muốn sửa project thì nên bắt đầu từ đâu?
 
 Nếu muốn sửa giao diện:
 
-- vào `static/css`
+- `apps/pages/templates/pages/`
+- `apps/classifier/templates/classifier/`
+- `templates/components/`
+- `static/css/`
 
-Nếu muốn sửa logic upload và predict:
+Nếu muốn sửa machine learning:
 
-- vào `apps/classifier`
+- `ml/train_model.py`
+- `ml/model.py`
+- `ml/feature_extraction.py`
+- `ml/helper.py`
+- `ml/predictor.py`
+- `ml/model_loader.py`
+- `ml/label_mapping.py`
 
-Nếu muốn sửa thuật toán machine learning:
+Nếu muốn sửa flow nối giữa web và ML:
 
-- vào `ml/`
+- `apps/classifier/services.py`
+- `apps/classifier/views.py`
 
-Nếu muốn đổi model:
+## 13. Kết luận
 
-- vào `ml_models/` và `ml/model_loader.py`
+Project hiện tại đã chuyển sang flow machine learning thật:
 
-Nếu muốn thêm URL:
+- train model bằng script riêng
+- lưu artifact vào `ml_models/`
+- predictor load model đã train
+- Django chỉ đóng vai trò gọi predictor và hiển thị kết quả
 
-- chỉnh `urls.py`
-
-Nếu muốn thêm trang:
-
-- thêm template
-- thêm view
-- thêm url
-- thêm link ở navbar nếu cần
-
-Nếu bạn là người mới, cách học tốt nhất với project này là:
-
-1. Mở `home.html`, `about.html`, `classify.html` để xem phần giao diện.
-2. Đọc `apps/classifier/views.py` để hiểu request đi đâu.
-3. Đọc `apps/classifier/services.py` để hiểu Django gọi ML thế nào.
-4. Đọc `ml/predictor.py` để hiểu đầu ra của model cần có dạng gì.
-5. Chỉnh màu trong `static/css/variables.css` để thấy thay đổi giao diện ngay.
-
-Nhìn toàn bộ project theo một câu rất ngắn:
-
-```text
-pages lo phần nội dung web,
-classifier lo phần upload và điều phối,
-ml lo phần dự đoán,
-templates lo HTML dùng chung,
-static lo giao diện,
-media lo file upload.
-```
-
-Nếu hiểu được câu trên, bạn đã nắm được phần cốt lõi của VeggiClassify.
+Đó là điểm quan trọng nhất cần nhớ khi đọc project ở phiên bản hiện tại.

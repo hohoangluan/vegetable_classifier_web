@@ -1,0 +1,71 @@
+{
+  "dataset_root": "D:\\Study\\ML\\code\\dataset",
+  "config_path": "D:\\Study\\ML\\code\\vegetable_classifier_web\\ml\\config\\config.json",
+  "output_model_path": "D:\\Study\\ML\\code\\vegetable_classifier_web\\ml_models\\vegetable_model.pkl",
+  "output_report_path": "D:\\Study\\ML\\code\\vegetable_classifier_web\\ml_models\\vegetable_model_report.json",
+  "class_names": [
+    "Bean",
+    "Bitter_Gourd",
+    "Bottle_Gourd",
+    "Brinjal",
+    "Broccoli",
+    "Cabbage",
+    "Capsicum",
+    "Carrot",
+    "Cauliflower",
+    "Cucumber",
+    "Papaya",
+    "Potato",
+    "Pumpkin",
+    "Radish",
+    "Tomato"
+  ],
+  "class_display_names": {
+    "Bean": "Đậu que",
+    "Bitter_Gourd": "Khổ qua",
+    "Bottle_Gourd": "Bầu",
+    "Brinjal": "Cà tím",
+    "Broccoli": "Súp lơ xanh",
+    "Cabbage": "Bắp cải",
+    "Capsicum": "Ớt chuông",
+    "Carrot": "Cà rốt",
+    "Cauliflower": "Súp lơ trắng",
+    "Cucumber": "Dưa chuột",
+    "Papaya": "Đu đủ",
+    "Potato": "Khoai tây",
+    "Pumpkin": "Bí đỏ",
+    "Radish": "Củ cải",
+    "Tomato": "Cà chua"
+  },
+  "split_counts": {
+    "train": 13500,
+    "validation": 2700,
+    "test": 2700
+  },
+  "feature_config": {
+    "target_size": [
+      128,
+      128
+    ],
+    "preprocess_mode": "letterbox",
+    "h_bins": 32,
+    "s_bins": 32,
+    "v_bins": 32,
+    "lbp_P": 8,
+    "lbp_R": 1
+  },
+  "mahalanobis": {
+    "mode": "manual",
+    "threshold": 7.5,
+    "reject_ood_by_default": true
+  },
+  "evaluation": {
+    "accuracy": 0.9344444444444444,
+    "macro_f1": 0.8781842774155886,
+    "rejection_rate": 0.004814814814814815,
+    "n_samples": 2700,
+    "n_ood": 13,
+    "threshold_maha": 7.5,
+    "classification_report": "label\tprecision\trecall\tf1-score\tsupport\nBean\t0.936\t0.894\t0.915\t180\nBitter_Gourd\t0.948\t0.917\t0.932\t180\nBottle_Gourd\t0.960\t0.933\t0.946\t180\nBrinjal\t0.867\t0.906\t0.886\t180\nBroccoli\t0.937\t0.911\t0.924\t180\nCabbage\t0.921\t0.906\t0.913\t180\nCapsicum\t0.957\t0.983\t0.970\t180\nCarrot\t0.978\t0.983\t0.981\t180\nCauliflower\t0.945\t0.956\t0.950\t180\nCucumber\t0.943\t0.911\t0.927\t180\nOOD\t0.000\t0.000\t0.000\t0\nPapaya\t0.914\t0.939\t0.926\t180\nPotato\t0.961\t0.967\t0.964\t180\nPumpkin\t0.933\t0.933\t0.933\t180\nRadish\t0.994\t0.967\t0.980\t180\nTomato\t0.896\t0.911\t0.904\t180"
+  }
+}
