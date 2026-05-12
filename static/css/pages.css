@@ -1,0 +1,46 @@
+.hero-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::after {
+    content: "";
+    position: absolute;
+    inset: auto -12% -35% auto;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(140, 207, 159, 0.6), transparent 68%);
+    pointer-events: none;
+}
+
+.action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1.4rem;
+}
+
+.pipeline-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.placeholder-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin-top: 1rem;
+}
+
+.gallery-tile {
+    display: grid;
+    place-items: center;
+    min-height: 120px;
+    border: 1px dashed var(--accent-color);
+    border-radius: 18px;
+    background: rgba(140, 207, 159, 0.12);
+    color: var(--primary-dark);
+    font-weight: 700;
+}

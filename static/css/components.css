@@ -1,0 +1,243 @@
+.brand-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.brand-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #2f8f5b, #88d19f);
+    box-shadow: 0 0 0 8px rgba(136, 209, 159, 0.18);
+}
+
+.nav-links a {
+    padding: 0.65rem 0.95rem;
+    border-radius: 999px;
+    color: var(--text-soft);
+    transition: all 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.is-active {
+    color: var(--primary-dark);
+    background: rgba(47, 143, 91, 0.1);
+}
+
+.page-header {
+    display: grid;
+    gap: 0.9rem;
+    max-width: 720px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: clamp(2.2rem, 6vw, 4.2rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+}
+
+.page-header p {
+    margin: 0;
+    color: var(--text-soft);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.eyebrow,
+.result-badge {
+    display: inline-flex;
+    width: fit-content;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(47, 143, 91, 0.12);
+    color: var(--primary-dark);
+    font-size: 0.86rem;
+    font-weight: 700;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.95rem 1.3rem;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.button:hover {
+    transform: translateY(-1px);
+}
+
+.button-primary {
+    background: linear-gradient(135deg, var(--primary-color), #4baa72);
+    color: #ffffff;
+    box-shadow: 0 16px 28px rgba(47, 143, 91, 0.2);
+}
+
+.button-secondary {
+    background: rgba(47, 143, 91, 0.08);
+    color: var(--primary-dark);
+}
+
+.feature-card,
+.stat-card,
+.pipeline-step {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background: var(--surface-color);
+}
+
+.feature-card h3,
+.stat-card h3,
+.pipeline-step h3 {
+    margin: 0;
+}
+
+.feature-card p,
+.stat-card p,
+.pipeline-step p {
+    margin: 0;
+    color: var(--text-soft);
+    line-height: 1.7;
+}
+
+.feature-card small {
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+
+.feature-icon,
+.pipeline-number,
+.stat-card strong {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    min-width: 54px;
+    padding: 0.7rem 0.85rem;
+    border-radius: 16px;
+    background: var(--surface-muted);
+    color: var(--primary-dark);
+    font-weight: 800;
+}
+
+.upload-form {
+    display: grid;
+    gap: 1.2rem;
+}
+
+.upload-box {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.4rem;
+    border: 1px dashed var(--accent-color);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(236, 248, 239, 0.95));
+}
+
+.upload-label {
+    font-weight: 700;
+}
+
+.file-input {
+    width: 100%;
+    padding: 0.9rem;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: #ffffff;
+}
+
+.helper-text,
+.error-text {
+    margin: 0;
+    color: var(--text-soft);
+}
+
+.error-text {
+    color: #b42318;
+}
+
+.preview-panel {
+    display: grid;
+    place-items: center;
+    gap: 0.8rem;
+    min-height: 220px;
+    padding: 1rem;
+    border-radius: 18px;
+    background: var(--surface-muted);
+}
+
+.preview-panel img,
+.result-image {
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.result-panel {
+    display: grid;
+    gap: 1rem;
+}
+
+.result-panel h2 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.result-panel p {
+    margin: 0;
+    color: var(--text-soft);
+}
+
+.dataset-bars,
+.clean-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.clean-list {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.ordered-list {
+    padding-left: 1.3rem;
+}
+
+.dataset-bar {
+    display: grid;
+    gap: 0.55rem;
+}
+
+.dataset-bar-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--text-soft);
+}
+
+.dataset-track {
+    height: 14px;
+    border-radius: 999px;
+    background: rgba(47, 143, 91, 0.1);
+    overflow: hidden;
+}
+
+.dataset-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #2f8f5b, #8fd2a4);
+}

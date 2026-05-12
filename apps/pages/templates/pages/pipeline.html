@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Pipeline | VeggiClassify{% endblock %}
+
+{% block content %}
+<section class="section-card">
+    {% include "components/page_header.html" with badge="ML Flow" title="Pipeline xu ly va phan loai" subtitle="Trang nay minh hoa cach du lieu di chuyen tu form upload den predictor, sau do quay lai giao dien duoi dang ket qua de doc." %}
+</section>
+
+<section class="content-section">
+    <div class="pipeline-grid">
+        {% for step in pipeline_steps %}
+            {% include "components/pipeline_step.html" with step_number=step.step_number title=step.title description=step.description %}
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

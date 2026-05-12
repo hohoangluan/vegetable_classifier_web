@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Dataset | VeggiClassify{% endblock %}
+
+{% block content %}
+<section class="section-card">
+    {% include "components/page_header.html" with badge="Dataset Overview" title="Minh hoa dataset" subtitle="Noi nay co the dat anh mau, thong ke so luong tung lop va mo ta cach chia train, validation, test cho bai toan phan loai rau cu." %}
+</section>
+
+<section class="content-section two-column-layout">
+    <article class="info-card">
+        <h2>Phan bo du lieu</h2>
+        <div class="dataset-bars">
+            {% for item in dataset_bars %}
+                {% include "components/dataset_bar.html" with name=item.name count=item.count ratio=item.ratio %}
+            {% endfor %}
+        </div>
+    </article>
+
+    <article class="info-card">
+        <h2>Thu muc anh mau</h2>
+        <p>Cac anh dataset minh hoa nen dat trong <code>static/images/dataset_samples/</code> de trang nay co the truy cap truc tiep qua static files.</p>
+        <div class="placeholder-gallery">
+            <div class="gallery-tile">Carrot</div>
+            <div class="gallery-tile">Potato</div>
+            <div class="gallery-tile">Tomato</div>
+            <div class="gallery-tile">Cabbage</div>
+        </div>
+    </article>
+</section>
+{% endblock %}

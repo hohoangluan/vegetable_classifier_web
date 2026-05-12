@@ -1,0 +1,17 @@
+{% if result %}
+<div class="result-panel">
+    <span class="result-badge">Du doan thanh cong</span>
+    <h2>{{ result.label_vi }}</h2>
+    <p><strong>Label:</strong> {{ result.label }}</p>
+    <p><strong>Do tin cay:</strong> {{ result.confidence|floatformat:2 }}</p>
+    {% if result.image_url %}
+    <img class="result-image" src="{{ result.image_url }}" alt="{{ result.label_vi }}">
+    {% endif %}
+</div>
+{% else %}
+<div class="result-panel empty-state">
+    <span class="result-badge">Chua co du lieu</span>
+    <h2>Chua co ket qua de hien thi</h2>
+    <p>Hay upload mot anh o trang classify de xem output mau tu model demo.</p>
+</div>
+{% endif %}

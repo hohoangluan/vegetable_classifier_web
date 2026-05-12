@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}VeggiClassify{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/variables.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="{{ page_name|default:'default-page' }}">
+    {% include "components/navbar.html" %}
+
+    <main class="site-main">
+        <div class="page-shell">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    {% include "components/footer.html" %}
+
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/active_nav.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

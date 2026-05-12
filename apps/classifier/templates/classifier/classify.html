@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Phan loai anh | VeggiClassify{% endblock %}
+
+{% block content %}
+<section class="section-card">
+    {% include "components/page_header.html" with badge="Classifier Demo" title="Phan loai rau cu bang anh upload" subtitle="View chi xu ly request va render template. Viec luu file va goi predictor duoc dua qua service de de bao tri va de hoc." %}
+</section>
+
+<section class="content-section two-column-layout">
+    <article class="info-card">
+        <h2>Tai anh len</h2>
+        <form method="post" enctype="multipart/form-data" class="upload-form">
+            {% csrf_token %}
+            {% include "components/upload_box.html" with form=form %}
+            <button class="button button-primary" type="submit">Phan loai anh</button>
+        </form>
+    </article>
+
+    <aside class="info-card">
+        <h2>Luong xu ly</h2>
+        <ol class="clean-list ordered-list">
+            <li>Nguoi dung chon anh rau cu.</li>
+            <li>App classifier goi <code>services.py</code>.</li>
+            <li>Service luu file vao <code>media/uploads/</code>.</li>
+            <li>Service goi <code>ml.predictor.predict()</code>.</li>
+            <li>Ket qua duoc render o trang result.</li>
+        </ol>
+    </aside>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/upload_preview.js' %}"></script>
+{% endblock %}

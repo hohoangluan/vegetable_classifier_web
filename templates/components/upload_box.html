@@ -1,0 +1,14 @@
+<div class="upload-box">
+    <label class="upload-label" for="{{ form.image.id_for_label }}">Chon anh rau cu</label>
+    {{ form.image }}
+    {% if form.image.help_text %}
+    <p class="helper-text">{{ form.image.help_text }}</p>
+    {% endif %}
+    {% if form.image.errors %}
+    <div class="error-text">{{ form.image.errors }}</div>
+    {% endif %}
+    <div class="preview-panel">
+        <img id="image-preview" src="" alt="Preview" hidden>
+        <p id="file-name">Chua co anh nao duoc chon.</p>
+    </div>
+</div>

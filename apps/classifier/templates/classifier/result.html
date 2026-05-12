@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Ket qua | VeggiClassify{% endblock %}
+
+{% block content %}
+<section class="section-card">
+    {% include "components/page_header.html" with badge="Prediction Result" title="Ket qua phan loai" subtitle="Trang nay nhan output tu service va hien thi lai du lieu theo cach de doc cho nguoi dung." %}
+</section>
+
+<section class="content-section two-column-layout">
+    <article class="info-card">
+        {% include "components/result_panel.html" with result=result %}
+    </article>
+
+    <aside class="info-card">
+        <h2>Ghi chu demo</h2>
+        {% if result %}
+        <p>Hien tai <code>ml/predictor.py</code> dang tra ket qua mau de giu project tap trung vao cau truc. Ban co the thay ham nay bang model that bat cu luc nao.</p>
+        <p><strong>Stored path:</strong> <code>{{ result.stored_path }}</code></p>
+        {% else %}
+        <p>Chua co ket qua nao trong phien lam viec nay. Hay quay lai trang classify de tai len mot anh mau.</p>
+        {% endif %}
+        <a class="button button-secondary" href="{% url 'classifier:classify' %}">Tai anh khac</a>
+    </aside>
+</section>
+{% endblock %}

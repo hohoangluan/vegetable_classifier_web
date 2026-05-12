@@ -1,0 +1,22 @@
+:root {
+    --bg-color: #eef9f1;
+    --bg-accent: radial-gradient(circle at top left, rgba(146, 216, 173, 0.45), transparent 40%),
+        linear-gradient(180deg, #f6fff7 0%, #edf8f0 100%);
+    --surface-color: #ffffff;
+    --surface-muted: #f4fbf6;
+    --border-color: #d6ead9;
+    --text-color: #163226;
+    --text-soft: #587566;
+    --primary-color: #2f8f5b;
+    --primary-dark: #206d45;
+    --accent-color: #8ccf9f;
+    --shadow-soft: 0 18px 48px rgba(45, 102, 67, 0.12);
+    --shadow-card: 0 14px 30px rgba(52, 112, 73, 0.08);
+    --radius-xl: 28px;
+    --radius-lg: 20px;
+    --radius-md: 16px;
+    --radius-sm: 12px;
+    --container-width: 1160px;
+    --navbar-height: 78px;
+    --font-sans: "Manrope", "Segoe UI", sans-serif;
+}
