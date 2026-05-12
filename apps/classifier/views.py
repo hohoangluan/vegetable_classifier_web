@@ -1,26 +1,9 @@
 from django.shortcuts import render
 
+from ml.label_mapping import get_dataset_label_items
+
 from .forms import ImageUploadForm
 from .services import classify_uploaded_image
-
-
-SUPPORTED_VEGETABLES = [
-    "Cà chua",
-    "Cà rốt",
-    "Khoai tây",
-    "Bắp cải",
-    "Ớt chuông",
-    "Dưa chuột",
-    "Hành tây",
-    "Bí đỏ",
-    "Rau bina",
-    "Súp lơ xanh",
-    "Cà tím",
-    "Ớt",
-    "Bí ngòi",
-    "Đậu Hà Lan",
-    "Ngô",
-]
 
 
 def classify_view(request):
@@ -33,6 +16,11 @@ def classify_view(request):
         preview_url = result.get("image_url", "")
         request.session["latest_prediction"] = result
 
+    supported_vegetables = [
+        item["label_vi"]
+        for item in get_dataset_label_items()
+    ]
+
     return render(
         request,
         "classifier/classify.html",
@@ -41,7 +29,7 @@ def classify_view(request):
             "form": form,
             "preview_url": preview_url,
             "result": result,
-            "supported_vegetables": SUPPORTED_VEGETABLES,
+            "supported_vegetables": supported_vegetables,
         },
     )
 

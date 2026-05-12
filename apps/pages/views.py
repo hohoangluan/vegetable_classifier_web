@@ -1,7 +1,3 @@
-<<<<<<< Updated upstream
-from django.shortcuts import render
-
-=======
 from __future__ import annotations
 
 import json
@@ -258,14 +254,19 @@ def get_dataset_overview():
         },
     }
 
->>>>>>> Stashed changes
 
 def home_view(request):
+    dataset_overview = get_dataset_overview()
+    stats = dataset_overview["stats"]
+
     context = {
         "page_name": "home",
         "hero": {
             "title": "Hệ Thống Phân Loại Rau Củ",
-            "subtitle": "Sử dụng công nghệ trí tuệ nhân tạo và deep learning để tự động nhận diện và phân loại các loại rau củ một cách chính xác và nhanh chóng",
+            "subtitle": (
+                "Sử dụng công nghệ trí tuệ nhân tạo và deep learning để tự động nhận diện "
+                "và phân loại các loại rau củ một cách chính xác và nhanh chóng"
+            ),
             "cta_label": "Bắt Đầu Phân Loại Ngay",
         },
         "feature_cards": [
@@ -282,7 +283,7 @@ def home_view(request):
             {
                 "icon_key": "shield",
                 "title": "Đa Dạng Loại Rau Củ",
-                "description": "Hỗ trợ phân loại nhiều loại rau củ phổ biến tại Việt Nam",
+                "description": "Hỗ trợ phân loại nhiều loại rau củ phổ biến trong tập dữ liệu hiện tại",
             },
         ],
         "usage_steps": [
@@ -306,9 +307,9 @@ def home_view(request):
             },
         ],
         "stats": [
-            {"number": "15+", "label": "Loại Rau Củ"},
+            {"number": str(stats["total_classes"]), "label": "Loại Rau Củ"},
             {"number": "95%", "label": "Độ Chính Xác"},
-            {"number": "5000+", "label": "Hình Ảnh"},
+            {"number": f"{stats['total_images']:,}", "label": "Hình Ảnh"},
             {"number": "<2s", "label": "Thời Gian Xử Lý"},
         ],
     }
@@ -518,13 +519,30 @@ def pipeline_view(request):
 
 
 def dataset_view(request):
+    dataset_overview = get_dataset_overview()
+    stats = dataset_overview["stats"]
+
     context = {
-        "page_name": "dataset",
-        "dataset_bars": [
-            {"name": "Carrot", "count": 1000, "ratio": 92},
-            {"name": "Potato", "count": 980, "ratio": 88},
-            {"name": "Tomato", "count": 940, "ratio": 84},
-            {"name": "Cabbage", "count": 860, "ratio": 76},
+        "page_name": "dataset-page",
+        "dataset_stats": [
+            {"icon_key": "image", "value": f"{stats['total_images']:,}", "label": "Tổng số hình ảnh"},
+            {"icon_key": "layers", "value": str(stats["total_classes"]), "label": "Số loại rau củ"},
+            {"icon_key": "chart", "value": str(stats["average_per_class"]), "label": "TB mỗi loại"},
+            {"icon_key": "database", "value": stats["size_display"], "label": "Dung lượng"},
         ],
+        "dataset_bars": dataset_overview["dataset_bars"],
+        "dataset_splits": dataset_overview["dataset_splits"],
+        "augmentation_methods": [
+            "Rotation (±30°)",
+            "Horizontal Flip",
+            "Vertical Flip",
+            "Zoom (0.8-1.2x)",
+            "Brightness Adjustment (±20%)",
+            "Contrast Adjustment (±20%)",
+            "Random Crop",
+            "Gaussian Noise",
+        ],
+        "dataset_filters": dataset_overview["dataset_bars"],
+        "dataset_samples": get_dataset_samples(),
     }
     return render(request, "pages/dataset.html", context)

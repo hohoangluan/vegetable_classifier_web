@@ -1,4 +1,10 @@
 Django
 Pillow
+numpy
+pandas
+opencv-python
+scipy
+scikit-image
 scikit-learn
 joblib
+tqdm
