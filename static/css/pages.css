@@ -806,35 +806,6 @@
     gap: 0.6rem;
 }
 
-.pipeline-stage-meta {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.pipeline-stage-phase {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 32px;
-    padding: 0.35rem 0.8rem;
-    border-radius: 999px;
-    font-size: 0.84rem;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-}
-
-.pipeline-stage-phase.is-training {
-    background: #e6efff;
-    color: #1d4ed8;
-}
-
-.pipeline-stage-phase.is-prediction {
-    background: #e8fff2;
-    color: #067647;
-}
-
 .pipeline-stage-content h2 {
     margin: 0;
     color: var(--text-color);
@@ -1006,7 +977,6 @@
     font-size: 0.98rem;
     font-weight: 800;
     text-align: right;
-    overflow-wrap: anywhere;
 }
 
 .training-metrics-card {
@@ -1030,11 +1000,6 @@
     gap: 1.25rem 2rem;
 }
 
-.training-metrics-card.is-empty {
-    background: #f8fafc;
-    border-color: #d8e0ea;
-}
-
 .training-metric-item {
     display: grid;
     gap: 0.2rem;
@@ -1050,25 +1015,6 @@
 .training-metric-item span {
     color: var(--primary-dark);
     font-size: 0.96rem;
-}
-
-.training-metrics-empty,
-.training-metrics-note {
-    margin: 0;
-}
-
-.training-metrics-empty {
-    color: var(--text-color);
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.55;
-}
-
-.training-metrics-note {
-    margin-top: 0.85rem;
-    color: #44607d;
-    font-size: 0.94rem;
-    line-height: 1.55;
 }
 
 .pipeline-flow-section {
@@ -1109,7 +1055,6 @@
     font-size: 1.05rem;
     font-weight: 700;
     text-align: center;
-    line-height: 1.35;
 }
 
 .pipeline-flow-pill.is-blue {
