@@ -1,4 +1,12 @@
 @media (max-width: 1440px) {
+    .about-page .page-shell {
+        max-width: 1340px;
+    }
+
+    .about-hero-copy h1 {
+        font-size: 3.9rem;
+    }
+
     .classify-hero-copy h1 {
         font-size: 3rem;
     }
@@ -52,6 +60,7 @@
 
     .home-feature-grid,
     .home-usage-grid,
+    .about-principles-grid,
     .classify-workspace,
     .pipeline-insights-grid,
     .dataset-detail-grid {
@@ -78,6 +87,34 @@
 
     .usage-step-card {
         padding-top: 1.65rem;
+    }
+
+    .about-page .page-shell {
+        gap: 1.65rem;
+    }
+
+    .about-hero,
+    .about-insight-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-system-grid,
+    .about-metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .about-hero-copy,
+    .about-hero-panel,
+    .about-highlights-card,
+    .about-flow-card,
+    .about-cta-card {
+        padding: 1.65rem;
+        border-radius: 26px;
+    }
+
+    .about-cta-card {
+        align-items: flex-start;
+        flex-direction: column;
     }
 
     .classify-page .page-shell {
@@ -155,6 +192,98 @@
 
     .home-landing {
         gap: 2.2rem;
+    }
+
+    .about-page .page-shell {
+        gap: 1.35rem;
+    }
+
+    .about-hero-copy,
+    .about-hero-panel,
+    .about-principle-card,
+    .about-system-card,
+    .about-highlights-card,
+    .about-flow-card,
+    .about-cta-card {
+        padding: 1.25rem 1.15rem 1.1rem;
+        border-radius: 22px;
+    }
+
+    .about-hero-copy h1 {
+        font-size: 2.45rem;
+    }
+
+    .about-hero-copy p,
+    .about-hero-panel-head p,
+    .about-principle-card p,
+    .about-system-copy p,
+    .about-flow-copy p,
+    .about-cta-copy p {
+        font-size: 0.95rem;
+    }
+
+    .about-hero-panel-head h2,
+    .about-section-heading h2,
+    .about-highlights-card h2,
+    .about-flow-card h2,
+    .about-cta-copy h2 {
+        font-size: 1.75rem;
+    }
+
+    .about-metric-grid,
+    .about-system-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-metric-card,
+    .about-principle-card,
+    .about-system-card {
+        min-height: 0;
+    }
+
+    .about-system-head {
+        grid-template-columns: 1fr;
+        gap: 0.9rem;
+    }
+
+    .about-highlight-row,
+    .about-flow-step {
+        grid-template-columns: 1fr;
+    }
+
+    .about-highlight-row {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 0.9rem 1rem;
+        border-radius: 16px;
+    }
+
+    .about-highlight-row strong {
+        text-align: left;
+    }
+
+    .about-flow-step {
+        gap: 0.75rem;
+    }
+
+    .about-flow-number,
+    .about-flow-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .about-flow-copy h3,
+    .about-system-copy h3,
+    .about-principle-card h3 {
+        font-size: 1.2rem;
+    }
+
+    .about-cta-actions {
+        width: 100%;
+    }
+
+    .about-cta-actions .button {
+        width: 100%;
     }
 
     .home-hero {
