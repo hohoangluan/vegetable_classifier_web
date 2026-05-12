@@ -1,17 +1,17 @@
 {% if result %}
 <div class="result-panel">
-    <span class="result-badge">Du doan thanh cong</span>
+    <span class="result-badge">Dự đoán thành công</span>
     <h2>{{ result.label_vi }}</h2>
-    <p><strong>Label:</strong> {{ result.label }}</p>
-    <p><strong>Do tin cay:</strong> {{ result.confidence|floatformat:2 }}</p>
+    <p><strong>Nhãn:</strong> {{ result.label }}</p>
+    <p><strong>Độ tin cậy:</strong> {{ result.confidence|floatformat:2 }}</p>
     {% if result.image_url %}
     <img class="result-image" src="{{ result.image_url }}" alt="{{ result.label_vi }}">
     {% endif %}
 </div>
 {% else %}
 <div class="result-panel empty-state">
-    <span class="result-badge">Chua co du lieu</span>
-    <h2>Chua co ket qua de hien thi</h2>
-    <p>Hay upload mot anh o trang classify de xem output mau tu model demo.</p>
+    <span class="result-badge">Chưa có dữ liệu</span>
+    <h2>Chưa có kết quả để hiển thị</h2>
+    <p>Hãy upload một ảnh ở trang classify để xem output mẫu từ model demo.</p>
 </div>
 {% endif %}

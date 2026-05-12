@@ -3,8 +3,8 @@ from django import forms
 
 class ImageUploadForm(forms.Form):
     image = forms.ImageField(
-        label="Anh rau cu",
-        help_text="Tai len mot anh de demo quy trinh phan loai.",
+        label="Ảnh rau củ",
+        help_text="Tải lên một ảnh để demo quy trình phân loại.",
         widget=forms.ClearableFileInput(
             attrs={
                 "class": "file-input",

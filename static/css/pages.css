@@ -1,24 +1,7 @@
-.hero-section {
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-section::after {
-    content: "";
-    position: absolute;
-    inset: auto -12% -35% auto;
-    width: 280px;
-    height: 280px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(140, 207, 159, 0.6), transparent 68%);
-    pointer-events: none;
-}
-
 .action-row {
     display: flex;
     flex-wrap: wrap;
     gap: 0.9rem;
-    margin-top: 1.4rem;
 }
 
 .pipeline-grid {
@@ -43,4 +26,213 @@
     background: rgba(140, 207, 159, 0.12);
     color: var(--primary-dark);
     font-weight: 700;
+}
+
+.home-landing {
+    display: grid;
+    gap: 2.35rem;
+}
+
+.home-hero {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 1.15rem;
+    padding: 0 0 0.25rem;
+}
+
+.hero-emblem {
+    display: grid;
+    place-items: center;
+    width: 86px;
+    height: 86px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, var(--primary-color), #06a74a);
+    color: #ffffff;
+    box-shadow: 0 15px 28px rgba(8, 185, 79, 0.18);
+}
+
+.hero-emblem svg {
+    width: 36px;
+    height: 36px;
+}
+
+.home-hero-title {
+    max-width: 980px;
+    margin: 0;
+    color: var(--text-color);
+    font-size: clamp(2.8rem, 4.7vw, 4.3rem);
+    line-height: 1.08;
+    letter-spacing: -0.06em;
+}
+
+.home-hero-subtitle {
+    max-width: 860px;
+    margin: 0;
+    color: var(--text-soft);
+    font-size: clamp(1.05rem, 1.55vw, 1.35rem);
+    line-height: 1.48;
+}
+
+.home-hero-actions {
+    justify-content: center;
+}
+
+.button-hero {
+    min-width: 310px;
+    padding: 1.05rem 2rem;
+    border-radius: 18px;
+    font-size: 1.04rem;
+    font-weight: 800;
+}
+
+.home-section {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.home-section-title,
+.home-panel-title {
+    margin: 0;
+    color: var(--text-color);
+    text-align: center;
+    font-size: clamp(2rem, 3vw, 2.55rem);
+    letter-spacing: -0.05em;
+}
+
+.home-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.4rem;
+}
+
+.feature-card-home {
+    min-height: 204px;
+    padding: 1.55rem 1.6rem 1.45rem;
+}
+
+.feature-card-home .feature-icon {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    border-radius: 16px;
+}
+
+.feature-card-home .feature-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.feature-card-home h3 {
+    margin-top: 0.2rem;
+    font-size: 1.22rem;
+    letter-spacing: -0.03em;
+}
+
+.feature-card-home p {
+    font-size: 0.95rem;
+    line-height: 1.58;
+}
+
+.home-usage-panel {
+    display: grid;
+    gap: 1.7rem;
+    padding: 2.3rem 2.15rem 2.1rem;
+    border: 1px solid rgba(13, 27, 54, 0.06);
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: var(--shadow-card);
+}
+
+.home-usage-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.15rem;
+}
+
+.usage-step-card {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 0.75rem;
+    padding: 1rem 0.75rem 0.45rem;
+}
+
+.usage-step-number {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: var(--surface-muted);
+    color: var(--primary-dark);
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+.usage-step-icon {
+    display: grid;
+    place-items: center;
+    width: 66px;
+    height: 66px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--primary-color), #06a74a);
+    color: #ffffff;
+    box-shadow: 0 12px 22px rgba(8, 185, 79, 0.16);
+}
+
+.usage-step-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+.usage-step-card h3 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 1.24rem;
+    letter-spacing: -0.03em;
+}
+
+.usage-step-card p {
+    max-width: 250px;
+    margin: 0;
+    color: var(--text-soft);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.home-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.2rem;
+}
+
+.stat-card-home {
+    justify-items: center;
+    text-align: center;
+    min-height: 116px;
+    padding: 1.35rem 1rem 1.1rem;
+}
+
+.stat-card-home strong {
+    min-width: 0;
+    width: auto;
+    height: auto;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--primary-color);
+    font-size: clamp(2.4rem, 3vw, 2.8rem);
+    line-height: 1;
+}
+
+.stat-card-home h3 {
+    margin: 0;
+    color: var(--text-soft);
+    font-size: 0.95rem;
+    font-weight: 500;
 }

@@ -1,5 +1,7 @@
-<article class="stat-card">
+<article class="stat-card{% if card_class %} {{ card_class }}{% endif %}">
     <strong>{{ number }}</strong>
     <h3>{{ label }}</h3>
+    {% if description %}
     <p>{{ description }}</p>
+    {% endif %}
 </article>

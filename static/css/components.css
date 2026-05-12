@@ -3,20 +3,21 @@
     align-items: center;
     gap: 0.7rem;
     font-weight: 800;
+    color: var(--text-color);
     letter-spacing: -0.03em;
 }
 
 .brand-dot {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     border-radius: 999px;
-    background: linear-gradient(135deg, #2f8f5b, #88d19f);
-    box-shadow: 0 0 0 8px rgba(136, 209, 159, 0.18);
+    background: linear-gradient(135deg, var(--primary-color), #7be6a0);
+    box-shadow: 0 0 0 7px rgba(8, 185, 79, 0.12);
 }
 
 .nav-links a {
-    padding: 0.65rem 0.95rem;
-    border-radius: 999px;
+    padding: 0.6rem 0.9rem;
+    border-radius: 14px;
     color: var(--text-soft);
     transition: all 0.2s ease;
 }
@@ -63,6 +64,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 0.7rem;
     padding: 0.95rem 1.3rem;
     border: 0;
     border-radius: 999px;
@@ -76,9 +78,9 @@
 }
 
 .button-primary {
-    background: linear-gradient(135deg, var(--primary-color), #4baa72);
+    background: linear-gradient(135deg, var(--primary-color), #06a74a);
     color: #ffffff;
-    box-shadow: 0 16px 28px rgba(47, 143, 91, 0.2);
+    box-shadow: 0 18px 32px rgba(8, 185, 79, 0.22);
 }
 
 .button-secondary {
@@ -90,11 +92,12 @@
 .stat-card,
 .pipeline-step {
     display: grid;
-    gap: 0.75rem;
-    padding: 1.5rem;
-    border: 1px solid var(--border-color);
+    gap: 0.9rem;
+    padding: 1.65rem;
+    border: 1px solid rgba(13, 27, 54, 0.06);
     border-radius: var(--radius-lg);
     background: var(--surface-color);
+    box-shadow: var(--shadow-card);
 }
 
 .feature-card h3,
@@ -108,7 +111,7 @@
 .pipeline-step p {
     margin: 0;
     color: var(--text-soft);
-    line-height: 1.7;
+    line-height: 1.65;
 }
 
 .feature-card small {
@@ -122,13 +125,29 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: fit-content;
-    min-width: 54px;
-    padding: 0.7rem 0.85rem;
-    border-radius: 16px;
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    padding: 0;
+    border-radius: 18px;
     background: var(--surface-muted);
-    color: var(--primary-dark);
+    color: var(--primary-color);
     font-weight: 800;
+}
+
+.feature-icon svg,
+.pipeline-number svg,
+.button-icon svg {
+    width: 32px;
+    height: 32px;
+}
+
+.button-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
 }
 
 .upload-form {

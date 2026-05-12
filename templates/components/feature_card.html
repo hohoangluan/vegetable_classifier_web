@@ -1,6 +1,14 @@
-<article class="feature-card">
-    <span class="feature-icon">{{ icon }}</span>
+<article class="feature-card{% if card_class %} {{ card_class }}{% endif %}">
+    <span class="feature-icon" aria-hidden="true">
+        {% if icon_key %}
+            {% include "components/icon_symbol.html" with name=icon_key %}
+        {% elif icon %}
+            {% include "components/icon_symbol.html" with name=icon %}
+        {% endif %}
+    </span>
     <h3>{{ title }}</h3>
     <p>{{ description }}</p>
+    {% if meta %}
     <small>{{ meta }}</small>
+    {% endif %}
 </article>

@@ -1,31 +1,31 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Phan loai anh | VeggiClassify{% endblock %}
+{% block title %}Phân loại ảnh | VeggiClassify{% endblock %}
 
 {% block content %}
 <section class="section-card">
-    {% include "components/page_header.html" with badge="Classifier Demo" title="Phan loai rau cu bang anh upload" subtitle="View chi xu ly request va render template. Viec luu file va goi predictor duoc dua qua service de de bao tri va de hoc." %}
+    {% include "components/page_header.html" with badge="Demo Phân Loại" title="Phân Loại Rau Củ Bằng Ảnh Upload" subtitle="View chỉ xử lý request và render template. Việc lưu file và gọi predictor được đưa qua service để dễ bảo trì và dễ học." %}
 </section>
 
 <section class="content-section two-column-layout">
     <article class="info-card">
-        <h2>Tai anh len</h2>
+        <h2>Tải Ảnh Lên</h2>
         <form method="post" enctype="multipart/form-data" class="upload-form">
             {% csrf_token %}
             {% include "components/upload_box.html" with form=form %}
-            <button class="button button-primary" type="submit">Phan loai anh</button>
+            <button class="button button-primary" type="submit">Phân Loại Ảnh</button>
         </form>
     </article>
 
     <aside class="info-card">
-        <h2>Luong xu ly</h2>
+        <h2>Luồng Xử Lý</h2>
         <ol class="clean-list ordered-list">
-            <li>Nguoi dung chon anh rau cu.</li>
-            <li>App classifier goi <code>services.py</code>.</li>
-            <li>Service luu file vao <code>media/uploads/</code>.</li>
-            <li>Service goi <code>ml.predictor.predict()</code>.</li>
-            <li>Ket qua duoc render o trang result.</li>
+            <li>Người dùng chọn ảnh rau củ.</li>
+            <li>App classifier gọi <code>services.py</code>.</li>
+            <li>Service lưu file vào <code>media/uploads/</code>.</li>
+            <li>Service gọi <code>ml.predictor.predict()</code>.</li>
+            <li>Kết quả được render ở trang result.</li>
         </ol>
     </aside>
 </section>

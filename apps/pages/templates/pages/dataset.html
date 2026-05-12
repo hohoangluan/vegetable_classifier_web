@@ -4,12 +4,12 @@
 
 {% block content %}
 <section class="section-card">
-    {% include "components/page_header.html" with badge="Dataset Overview" title="Minh hoa dataset" subtitle="Noi nay co the dat anh mau, thong ke so luong tung lop va mo ta cach chia train, validation, test cho bai toan phan loai rau cu." %}
+    {% include "components/page_header.html" with badge="Tổng Quan Dataset" title="Minh Họa Dataset" subtitle="Nơi này có thể đặt ảnh mẫu, thống kê số lượng từng lớp và mô tả cách chia train, validation, test cho bài toán phân loại rau củ." %}
 </section>
 
 <section class="content-section two-column-layout">
     <article class="info-card">
-        <h2>Phan bo du lieu</h2>
+        <h2>Phân Bố Dữ Liệu</h2>
         <div class="dataset-bars">
             {% for item in dataset_bars %}
                 {% include "components/dataset_bar.html" with name=item.name count=item.count ratio=item.ratio %}
@@ -18,8 +18,8 @@
     </article>
 
     <article class="info-card">
-        <h2>Thu muc anh mau</h2>
-        <p>Cac anh dataset minh hoa nen dat trong <code>static/images/dataset_samples/</code> de trang nay co the truy cap truc tiep qua static files.</p>
+        <h2>Thư Mục Ảnh Mẫu</h2>
+        <p>Các ảnh dataset minh họa nên đặt trong <code>static/images/dataset_samples/</code> để trang này có thể truy cập trực tiếp qua static files.</p>
         <div class="placeholder-gallery">
             <div class="gallery-tile">Carrot</div>
             <div class="gallery-tile">Potato</div>
