@@ -4,30 +4,44 @@
 {% block title %}Phân loại ảnh | VeggiClassify{% endblock %}
 
 {% block content %}
-<section class="section-card">
-    {% include "components/page_header.html" with badge="Demo Phân Loại" title="Phân Loại Rau Củ Bằng Ảnh Upload" subtitle="View chỉ xử lý request và render template. Việc lưu file và gọi predictor được đưa qua service để dễ bảo trì và dễ học." %}
+<section class="classify-hero">
+    <div class="classify-hero-copy">
+        <h1>Phân Loại Rau Củ</h1>
+        <p>Tải lên hình ảnh rau củ để nhận diện và phân loại tự động</p>
+    </div>
 </section>
 
-<section class="content-section two-column-layout">
-    <article class="info-card">
-        <h2>Tải Ảnh Lên</h2>
-        <form method="post" enctype="multipart/form-data" class="upload-form">
+<section class="classify-workspace">
+    <article class="classify-panel">
+        <div class="classify-panel-header">
+            <h2>Tải Hình Ảnh</h2>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="classify-form" data-upload-form>
             {% csrf_token %}
-            {% include "components/upload_box.html" with form=form %}
-            <button class="button button-primary" type="submit">Phân Loại Ảnh</button>
+            {% include "components/upload_box.html" with form=form preview_url=preview_url %}
+            <noscript>
+                <button class="button button-primary classify-submit-fallback" type="submit">Phân Loại Ảnh</button>
+            </noscript>
         </form>
     </article>
 
-    <aside class="info-card">
-        <h2>Luồng Xử Lý</h2>
-        <ol class="clean-list ordered-list">
-            <li>Người dùng chọn ảnh rau củ.</li>
-            <li>App classifier gọi <code>services.py</code>.</li>
-            <li>Service lưu file vào <code>media/uploads/</code>.</li>
-            <li>Service gọi <code>ml.predictor.predict()</code>.</li>
-            <li>Kết quả được render ở trang result.</li>
-        </ol>
+    <aside class="classify-panel">
+        <div class="classify-panel-header">
+            <h2>Kết Quả Phân Loại</h2>
+        </div>
+        {% include "components/result_panel.html" with result=result %}
     </aside>
+</section>
+
+<section class="classify-supported">
+    <div class="classify-supported-card">
+        <h2>Danh Sách Rau Củ Được Hỗ Trợ</h2>
+        <div class="supported-grid">
+            {% for item in supported_vegetables %}
+                <span class="supported-pill">{{ item }}</span>
+            {% endfor %}
+        </div>
+    </div>
 </section>
 {% endblock %}
 

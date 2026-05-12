@@ -1,14 +1,34 @@
-<div class="upload-box">
-    <label class="upload-label" for="{{ form.image.id_for_label }}">Chọn ảnh rau củ</label>
+<div class="upload-box{% if preview_url %} has-preview{% endif %}" data-upload-box>
     {{ form.image }}
-    {% if form.image.help_text %}
-    <p class="helper-text">{{ form.image.help_text }}</p>
-    {% endif %}
+
+    <label class="upload-dropzone{% if preview_url %} has-preview{% endif %}" for="{{ form.image.id_for_label }}" data-upload-dropzone>
+        <div class="upload-empty-state" data-upload-empty{% if preview_url %} hidden{% endif %}>
+            <span class="upload-illustration">
+                {% include "components/icon_symbol.html" with name="upload" %}
+            </span>
+            <h3>Kéo thả hình ảnh vào đây</h3>
+            <p>hoặc nhấn để chọn file</p>
+            <span class="upload-supported-types">Hỗ trợ: JPG, PNG, WEBP</span>
+        </div>
+
+        <div class="upload-preview-state" data-upload-preview-state{% if not preview_url %} hidden{% endif %}>
+            <img id="image-preview" src="{{ preview_url|default:'' }}" alt="Ảnh đã chọn"{% if not preview_url %} hidden{% endif %}>
+        </div>
+    </label>
+
+    <button class="preview-clear-button" type="button" data-clear-preview aria-label="Xóa ảnh đã chọn"{% if not preview_url %} hidden{% endif %}>
+        <span aria-hidden="true">&times;</span>
+    </button>
+
+    <p class="upload-caption" id="file-name">
+        {% if preview_url %}
+            Ảnh đã sẵn sàng để phân loại.
+        {% else %}
+            Nhấn vào khung hoặc kéo thả ảnh để bắt đầu.
+        {% endif %}
+    </p>
+
     {% if form.image.errors %}
-    <div class="error-text">{{ form.image.errors }}</div>
+        <div class="error-text">{{ form.image.errors|striptags }}</div>
     {% endif %}
-    <div class="preview-panel">
-        <img id="image-preview" src="" alt="Xem trước" hidden>
-        <p id="file-name">Chưa có ảnh nào được chọn.</p>
-    </div>
 </div>

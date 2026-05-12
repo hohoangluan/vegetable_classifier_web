@@ -1,26 +1,39 @@
 {% extends "base.html" %}
 
-{% block title %}Kết quả | VeggiClassify{% endblock %}
+{% block title %}Kết quả phân loại | VeggiClassify{% endblock %}
 
 {% block content %}
-<section class="section-card">
-    {% include "components/page_header.html" with badge="Kết Quả Dự Đoán" title="Kết Quả Phân Loại" subtitle="Trang này nhận output từ service và hiển thị lại dữ liệu theo cách dễ đọc cho người dùng." %}
+<section class="classify-hero classify-hero-compact">
+    <div class="classify-hero-copy">
+        <h1>Kết Quả Phân Loại</h1>
+        <p>Xem lại ảnh vừa tải lên và thông tin nhận diện mới nhất.</p>
+    </div>
 </section>
 
-<section class="content-section two-column-layout">
-    <article class="info-card">
-        {% include "components/result_panel.html" with result=result %}
+<section class="classify-workspace result-page-layout">
+    <article class="classify-panel">
+        <div class="classify-panel-header">
+            <h2>Ảnh Đã Tải Lên</h2>
+        </div>
+        {% if result and result.image_url %}
+            <div class="result-preview-frame">
+                <img src="{{ result.image_url }}" alt="{% firstof result.label_vi result.label 'Ảnh đã tải lên' %}">
+            </div>
+        {% else %}
+            <div class="result-preview-empty">
+                <span class="empty-result-icon">
+                    {% include "components/icon_symbol.html" with name="image" %}
+                </span>
+                <p>Chưa có ảnh nào trong phiên làm việc này.</p>
+            </div>
+        {% endif %}
     </article>
 
-    <aside class="info-card">
-        <h2>Ghi Chú Demo</h2>
-        {% if result %}
-        <p>Hiện tại <code>ml/predictor.py</code> đang trả kết quả mẫu để giữ project tập trung vào cấu trúc. Bạn có thể thay hàm này bằng model thật bất cứ lúc nào.</p>
-        <p><strong>Đường dẫn lưu:</strong> <code>{{ result.stored_path }}</code></p>
-        {% else %}
-        <p>Chưa có kết quả nào trong phiên làm việc này. Hãy quay lại trang classify để tải lên một ảnh mẫu.</p>
-        {% endif %}
-        <a class="button button-secondary" href="{% url 'classifier:classify' %}">Tải Ảnh Khác</a>
+    <aside class="classify-panel">
+        <div class="classify-panel-header">
+            <h2>Kết Quả Phân Loại</h2>
+        </div>
+        {% include "components/result_panel.html" with result=result %}
     </aside>
 </section>
 {% endblock %}
