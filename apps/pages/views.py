@@ -1,4 +1,30 @@
+from django.conf import settings
 from django.shortcuts import render
+
+
+DATASET_SAMPLE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp"}
+
+
+def get_dataset_samples():
+    samples_dir = settings.BASE_DIR / "static" / "images" / "dataset_samples"
+    static_root = settings.BASE_DIR / "static"
+
+    if not samples_dir.exists():
+        return []
+
+    samples = []
+    for file_path in sorted(samples_dir.rglob("*")):
+        if not file_path.is_file() or file_path.suffix.lower() not in DATASET_SAMPLE_EXTENSIONS:
+            continue
+
+        samples.append(
+            {
+                "title": file_path.stem.replace("-", " ").replace("_", " ").title(),
+                "path": file_path.relative_to(static_root).as_posix(),
+            }
+        )
+
+    return samples
 
 
 def home_view(request):
@@ -6,7 +32,10 @@ def home_view(request):
         "page_name": "home",
         "hero": {
             "title": "Hệ Thống Phân Loại Rau Củ",
-            "subtitle": "Sử dụng công nghệ trí tuệ nhân tạo và deep learning để tự động nhận diện và phân loại các loại rau củ một cách chính xác và nhanh chóng",
+            "subtitle": (
+                "Sử dụng công nghệ trí tuệ nhân tạo và deep learning để tự động nhận diện "
+                "và phân loại các loại rau củ một cách chính xác và nhanh chóng"
+            ),
             "cta_label": "Bắt Đầu Phân Loại Ngay",
         },
         "feature_cards": [
@@ -182,13 +211,62 @@ def pipeline_view(request):
 
 
 def dataset_view(request):
+    dataset_bars = [
+        {"name": "Cà chua", "count": 450, "ratio": 100},
+        {"name": "Cà rốt", "count": 420, "ratio": 93.3},
+        {"name": "Khoai tây", "count": 380, "ratio": 84.4},
+        {"name": "Bắp cải", "count": 360, "ratio": 80},
+        {"name": "Ớt chuông", "count": 340, "ratio": 75.6},
+        {"name": "Dưa chuột", "count": 330, "ratio": 73.3},
+        {"name": "Hành tây", "count": 320, "ratio": 71.1},
+        {"name": "Bí đỏ", "count": 310, "ratio": 68.9},
+        {"name": "Rau bina", "count": 300, "ratio": 66.7},
+        {"name": "Súp lơ xanh", "count": 290, "ratio": 64.4},
+        {"name": "Cà tím", "count": 280, "ratio": 62.2},
+        {"name": "Ớt", "count": 270, "ratio": 60},
+        {"name": "Bí ngòi", "count": 260, "ratio": 57.8},
+        {"name": "Đậu Hà Lan", "count": 250, "ratio": 55.6},
+        {"name": "Ngô", "count": 240, "ratio": 53.3},
+    ]
+
     context = {
-        "page_name": "dataset",
-        "dataset_bars": [
-            {"name": "Carrot", "count": 1000, "ratio": 92},
-            {"name": "Potato", "count": 980, "ratio": 88},
-            {"name": "Tomato", "count": 940, "ratio": 84},
-            {"name": "Cabbage", "count": 860, "ratio": 76},
+        "page_name": "dataset-page",
+        "dataset_stats": [
+            {"icon_key": "image", "value": "4,800", "label": "Tổng số hình ảnh"},
+            {"icon_key": "layers", "value": "15", "label": "Số loại rau củ"},
+            {"icon_key": "chart", "value": "320", "label": "TB mỗi loại"},
+            {"icon_key": "database", "value": "2.3 GB", "label": "Dung lượng"},
         ],
+        "dataset_bars": dataset_bars,
+        "dataset_splits": [
+            {
+                "name": "Training Set",
+                "count": "3,360 hình ảnh",
+                "percentage": 70,
+                "is_primary": True,
+            },
+            {
+                "name": "Validation Set",
+                "count": "960 hình ảnh",
+                "percentage": 20,
+            },
+            {
+                "name": "Test Set",
+                "count": "480 hình ảnh",
+                "percentage": 10,
+            },
+        ],
+        "augmentation_methods": [
+            "Rotation (±30°)",
+            "Horizontal Flip",
+            "Vertical Flip",
+            "Zoom (0.8-1.2x)",
+            "Brightness Adjustment (±20%)",
+            "Contrast Adjustment (±20%)",
+            "Random Crop",
+            "Gaussian Noise",
+        ],
+        "dataset_filters": dataset_bars,
+        "dataset_samples": get_dataset_samples(),
     }
     return render(request, "pages/dataset.html", context)
