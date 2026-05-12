@@ -3,24 +3,164 @@
 {% block title %}Giới thiệu | VeggiClassify{% endblock %}
 
 {% block content %}
-<section class="section-card">
-    {% include "components/page_header.html" with badge="Tổng Quan Dự Án" title="Giới Thiệu Dự Án" subtitle="VeggiClassify là web demo giúp sinh viên hiểu cách kết nối một mô hình machine learning vào Django mà vẫn giữ code gọn, dễ đọc." %}
-</section>
+<section class="about-hero">
+    <article class="about-hero-copy">
+        <span class="eyebrow">Tổng Quan Dự Án</span>
+        <h1>VeggiClassify kết nối machine learning với một trải nghiệm web dễ hiểu và dễ mở rộng.</h1>
+        <p>
+            Trang giới thiệu này giúp người xem nắm nhanh dự án đang làm gì, pipeline được tổ chức ra sao
+            và vì sao codebase vẫn gọn ngay cả khi có xử lý dữ liệu, mô hình và giao diện chạy cùng nhau.
+        </p>
 
-<section class="content-section two-column-layout">
-    <article class="info-card">
-        <h2>Tư Tưởng Thiết Kế</h2>
-        <p>Phần web và phần machine learning được tách trách nhiệm: Django xử lý giao diện, routing và upload; package <code>ml/</code> xử lý predict.</p>
-        <p>Cách tổ chức này giúp sinh viên dễ debug, dễ thay đổi model và tránh viết toàn bộ logic trong <code>views.py</code>.</p>
+        <div class="action-row about-hero-actions">
+            <a class="button button-primary" href="{% url 'classifier:classify' %}">
+                <span class="button-icon" aria-hidden="true">
+                    {% include "components/icon_symbol.html" with name="upload" %}
+                </span>
+                <span>Thử Phân Loại Ảnh</span>
+            </a>
+            <a class="button button-secondary" href="{% url 'pages:pipeline' %}">
+                <span class="button-icon" aria-hidden="true">
+                    {% include "components/icon_symbol.html" with name="git-branch" %}
+                </span>
+                <span>Xem Pipeline</span>
+            </a>
+        </div>
     </article>
 
-    <aside class="info-card">
-        <h2>Kiến Trúc Gọn Gàng</h2>
-        <ul class="clean-list">
-            {% for point in architecture_points %}
-            <li>{{ point }}</li>
+    <aside class="about-hero-panel">
+        <div class="about-hero-panel-head">
+            <span class="eyebrow">Bức Tranh Nhanh</span>
+            <h2>Project này đang bám theo dữ liệu và artifact thật của repo hiện tại.</h2>
+            <p>Nhìn vào các chỉ số bên dưới là có thể hiểu ngay quy mô dữ liệu và lõi machine learning đang được dùng.</p>
+        </div>
+
+        <div class="about-metric-grid">
+            {% for item in about_metrics %}
+                <article class="about-metric-card is-{{ item.accent }}">
+                    <span class="about-metric-icon" aria-hidden="true">
+                        {% include "components/icon_symbol.html" with name=item.icon_key %}
+                    </span>
+                    <strong>{{ item.value }}</strong>
+                    <span>{{ item.label }}</span>
+                </article>
             {% endfor %}
-        </ul>
+        </div>
     </aside>
+</section>
+
+<section class="about-section">
+    <div class="section-heading about-section-heading">
+        <span class="eyebrow">Nguyên Tắc Thiết Kế</span>
+        <h2>Mục tiêu không chỉ là phân loại đúng, mà còn là làm cho project dễ học và dễ phát triển tiếp.</h2>
+        <p>Ba nguyên tắc này quyết định cách toàn bộ project được chia lớp, đặt file và hiển thị thông tin.</p>
+    </div>
+
+    <div class="about-principles-grid">
+        {% for item in principles %}
+            <article class="about-principle-card">
+                <span class="about-principle-icon" aria-hidden="true">
+                    {% include "components/icon_symbol.html" with name=item.icon_key %}
+                </span>
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.description }}</p>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="about-section">
+    <div class="section-heading about-section-heading">
+        <span class="eyebrow">Bản Đồ Hệ Thống</span>
+        <h2>Bốn khối chính phối hợp với nhau để biến ảnh upload thành kết quả phân loại.</h2>
+        <p>Mỗi khối giữ một vai trò rõ ràng, giúp bạn dễ lần theo luồng xử lý mà không phải đọc toàn bộ repo cùng lúc.</p>
+    </div>
+
+    <div class="about-system-grid">
+        {% for item in system_blocks %}
+            <article class="about-system-card is-{{ item.accent }}">
+                <div class="about-system-head">
+                    <span class="about-system-icon" aria-hidden="true">
+                        {% include "components/icon_symbol.html" with name=item.icon_key %}
+                    </span>
+                    <div class="about-system-copy">
+                        <h3>{{ item.title }}</h3>
+                        <p>{{ item.description }}</p>
+                    </div>
+                </div>
+
+                <ul class="about-system-list">
+                    {% for detail in item.items %}
+                        <li>{{ detail }}</li>
+                    {% endfor %}
+                </ul>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="about-insight-grid">
+    <article class="about-highlights-card">
+        <div class="section-heading">
+            <span class="eyebrow">Neo Trong Repo</span>
+            <h2>Các thông số và artifact quan trọng</h2>
+            <p>Phần này giúp bạn nhìn nhanh những giá trị đang điều khiển hành vi của project hiện tại.</p>
+        </div>
+
+        <div class="about-highlight-list">
+            {% for item in project_highlights %}
+                <div class="about-highlight-row">
+                    <span>{{ item.label }}</span>
+                    <strong>{{ item.value }}</strong>
+                </div>
+            {% endfor %}
+        </div>
+    </article>
+
+    <article class="about-flow-card">
+        <div class="section-heading">
+            <span class="eyebrow">Luồng Trải Nghiệm</span>
+            <h2>Từ ảnh đầu vào đến kết quả cuối</h2>
+            <p>Đây là hành trình người dùng thật sẽ đi qua khi thao tác với hệ thống trên web.</p>
+        </div>
+
+        <div class="about-flow-list">
+            {% for item in journey_steps %}
+                <article class="about-flow-step">
+                    <span class="about-flow-number">{{ forloop.counter|stringformat:"02d" }}</span>
+                    <span class="about-flow-icon" aria-hidden="true">
+                        {% include "components/icon_symbol.html" with name=item.icon_key %}
+                    </span>
+                    <div class="about-flow-copy">
+                        <h3>{{ item.title }}</h3>
+                        <p>{{ item.description }}</p>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </article>
+</section>
+
+<section class="about-cta-card">
+    <div class="about-cta-copy">
+        <span class="eyebrow">Khám Phá Tiếp</span>
+        <h2>Muốn đi sâu hơn, bạn có thể xem pipeline chi tiết hoặc mở dataset ngay từ đây.</h2>
+        <p>Trang giới thiệu đóng vai trò điểm bắt đầu, còn phần pipeline và dataset sẽ cho bạn nhìn sâu vào luồng xử lý và dữ liệu huấn luyện.</p>
+    </div>
+
+    <div class="action-row about-cta-actions">
+        <a class="button button-primary" href="{% url 'pages:pipeline' %}">
+            <span class="button-icon" aria-hidden="true">
+                {% include "components/icon_symbol.html" with name="cpu" %}
+            </span>
+            <span>Xem Chi Tiết Pipeline</span>
+        </a>
+        <a class="button button-secondary" href="{% url 'pages:dataset' %}">
+            <span class="button-icon" aria-hidden="true">
+                {% include "components/icon_symbol.html" with name="database" %}
+            </span>
+            <span>Mở Trang Dataset</span>
+        </a>
+    </div>
 </section>
 {% endblock %}

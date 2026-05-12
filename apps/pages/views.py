@@ -546,3 +546,185 @@ def dataset_view(request):
         "dataset_samples": get_dataset_samples(),
     }
     return render(request, "pages/dataset.html", context)
+
+
+# Rich introduction landing page for the about route.
+def about_landing_view(request):
+    dataset_overview = get_dataset_overview()
+    pipeline_config = get_pipeline_config()
+    pipeline_report = get_pipeline_report()
+
+    stats = dataset_overview["stats"]
+    split_count_map = dataset_overview.get("split_count_map") or {}
+    feature_config = pipeline_config["feature"]
+    transform_config = pipeline_config["transform"]
+    gmm_config = pipeline_config["gmm"]
+
+    dataset_root_display = format_display_path(
+        get_dataset_root(),
+        settings.BASE_DIR.parent,
+        settings.BASE_DIR,
+    )
+    model_path_display = format_display_path(
+        pipeline_report.get("output_model_path") or get_pipeline_model_path(),
+        settings.BASE_DIR,
+        settings.BASE_DIR.parent,
+    )
+    report_path_display = format_display_path(
+        pipeline_report.get("output_report_path") or get_pipeline_report_path(),
+        settings.BASE_DIR,
+        settings.BASE_DIR.parent,
+    )
+
+    context = {
+        "page_name": "about-page",
+        "about_metrics": [
+            {
+                "icon_key": "layers",
+                "accent": "green",
+                "value": str(stats["total_classes"]),
+                "label": "Loại rau củ đang hỗ trợ",
+            },
+            {
+                "icon_key": "image",
+                "accent": "blue",
+                "value": f"{stats['total_images']:,}",
+                "label": "Ảnh hiện có trong dataset",
+            },
+            {
+                "icon_key": "cpu",
+                "accent": "purple",
+                "value": "HSV + LBP",
+                "label": "Khối trích đặc trưng đang dùng",
+            },
+            {
+                "icon_key": "brain",
+                "accent": "amber",
+                "value": f"GMM x {gmm_config['n_components']}",
+                "label": "Bộ phân loại cho từng lớp",
+            },
+        ],
+        "principles": [
+            {
+                "icon_key": "shield",
+                "title": "Tách Trách Nhiệm Rõ Ràng",
+                "description": "Django phụ trách giao diện, điều hướng và upload; package ml/ tập trung vào xử lý dữ liệu và suy luận.",
+            },
+            {
+                "icon_key": "check-circle",
+                "title": "Bám Theo Dữ Liệu Thật",
+                "description": "Trang giới thiệu lấy số liệu thật từ dataset local và artifact hiện có thay vì dùng số demo cố định.",
+            },
+            {
+                "icon_key": "git-branch",
+                "title": "Dễ Học Và Dễ Mở Rộng",
+                "description": "Người học có thể lần theo từng lớp của project để thay model, đổi feature hoặc mở rộng giao diện mà không bị rối.",
+            },
+        ],
+        "system_blocks": [
+            {
+                "icon_key": "book-open",
+                "accent": "green",
+                "title": "Pages App",
+                "description": "Nơi gom các trang trình bày để người dùng hiểu toàn cảnh project.",
+                "items": [
+                    "Quản lý home, about, pipeline và dataset.",
+                    "Biến thông tin kỹ thuật thành giao diện dễ đọc hơn cho người học.",
+                ],
+            },
+            {
+                "icon_key": "upload",
+                "accent": "blue",
+                "title": "Classifier App",
+                "description": "Cửa vào chính cho tác vụ phân loại ảnh trên web.",
+                "items": [
+                    "Xử lý upload, preview ảnh và phiên kết quả gần nhất.",
+                    "Hiển thị nhãn, độ tin cậy và trạng thái dự đoán cho người dùng.",
+                ],
+            },
+            {
+                "icon_key": "cpu",
+                "accent": "purple",
+                "title": "ML Core",
+                "description": "Khối machine learning được giữ độc lập để logic không dồn vào view.",
+                "items": [
+                    "Chứa preprocessing, feature extraction, model loader và predictor.",
+                    "Cho phép đổi pipeline hoặc huấn luyện lại mà ít đụng vào phần web.",
+                ],
+            },
+            {
+                "icon_key": "database",
+                "accent": "amber",
+                "title": "Dataset Và Artifact",
+                "description": "Phần dữ liệu và file model là nguồn sự thật cho việc huấn luyện và suy luận.",
+                "items": [
+                    f"Dataset root hiện tại: {dataset_root_display}",
+                    f"Artifact dùng lúc suy luận: {model_path_display}",
+                ],
+            },
+        ],
+        "project_highlights": [
+            {"label": "Dataset Root", "value": dataset_root_display},
+            {
+                "label": "Train / Validation / Test",
+                "value": (
+                    f"{split_count_map.get('train', 0):,} / "
+                    f"{split_count_map.get('validation', 0):,} / "
+                    f"{split_count_map.get('test', 0):,}"
+                ),
+            },
+            {
+                "label": "Kích thước đầu vào",
+                "value": f"{feature_config['target_size'][0]} x {feature_config['target_size'][1]} px",
+            },
+            {"label": "Preprocess Mode", "value": str(feature_config["preprocess_mode"])},
+            {
+                "label": "Feature Stack",
+                "value": (
+                    f"H={feature_config['h_bins']}, "
+                    f"S={feature_config['s_bins']}, "
+                    f"V={feature_config['v_bins']} | "
+                    f"LBP P={feature_config['lbp_P']}, R={feature_config['lbp_R']}"
+                ),
+            },
+            {
+                "label": "Scaler / LDA",
+                "value": (
+                    f"{format_enabled_flag(transform_config['use_scaler'])} / "
+                    f"{format_enabled_flag(transform_config['use_lda'])}"
+                ),
+            },
+            {"label": "Model Artifact", "value": model_path_display},
+            {
+                "label": "Training Report",
+                "value": (
+                    report_path_display
+                    if pipeline_report
+                    else "Chưa có report huấn luyện trong ml_models/"
+                ),
+            },
+        ],
+        "journey_steps": [
+            {
+                "icon_key": "upload",
+                "title": "Nhận ảnh từ người dùng",
+                "description": "Người dùng tải ảnh lên từ trang classify và web lưu ảnh vào media trước khi suy luận.",
+            },
+            {
+                "icon_key": "image",
+                "title": "Tiền xử lý thống nhất",
+                "description": "Ảnh được resize và chuẩn hóa theo cấu hình hiện tại để đầu vào luôn đồng nhất.",
+            },
+            {
+                "icon_key": "cpu",
+                "title": "Trích đặc trưng và dự đoán",
+                "description": "Pipeline tạo vector đặc trưng HSV + LBP rồi đưa qua mô hình GMM đã huấn luyện.",
+            },
+            {
+                "icon_key": "check-circle",
+                "title": "Render kết quả trên web",
+                "description": "Trang classify hiển thị label tiếng Việt, độ tin cậy và thông tin model cho người dùng cuối.",
+            },
+        ],
+    }
+    return render(request, "pages/about.html", context)
