@@ -25,5 +25,5 @@ def classify_uploaded_image(uploaded_file):
     result["stored_path"] = str(image_path)
     result["confidence_percent"] = round(confidence_percent, 2)
     result["processing_time"] = result.get("processing_time") or f"{elapsed_time:.1f}s"
-    result["model_name"] = result.get("model_name") or "ResNet50"
+    result["model_name"] = result.get("model_name") or "VegetableGMMModel"
     return result
