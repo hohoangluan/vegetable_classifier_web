@@ -1,8 +1,20 @@
+from __future__ import annotations
+
+from functools import lru_cache
+from pathlib import Path
+
 from django.conf import settings
 from django.shortcuts import render
 
+from ml.helper import scan_dataset
+from ml.label_mapping import get_dataset_label_items, get_vietnamese_label
+
 
 DATASET_SAMPLE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp"}
+
+
+def get_dataset_root():
+    return settings.BASE_DIR.parent / "dataset"
 
 
 def get_dataset_samples():
@@ -27,7 +39,107 @@ def get_dataset_samples():
     return samples
 
 
+@lru_cache(maxsize=1)
+def get_dataset_overview():
+    dataset_root = get_dataset_root()
+    label_items = get_dataset_label_items(dataset_root / "train")
+
+    if not dataset_root.exists():
+        return {
+            "label_items": label_items,
+            "dataset_bars": [
+                {"label": item["label"], "name": item["label_vi"], "count": 0, "ratio": 0}
+                for item in label_items
+            ],
+            "dataset_splits": [
+                {"name": "Training Set", "count": "0 hình ảnh", "percentage": 0, "is_primary": True},
+                {"name": "Validation Set", "count": "0 hình ảnh", "percentage": 0},
+                {"name": "Test Set", "count": "0 hình ảnh", "percentage": 0},
+            ],
+            "stats": {
+                "total_images": 0,
+                "total_classes": len(label_items),
+                "average_per_class": 0,
+                "size_display": "0.0 GB",
+            },
+        }
+
+    dataset_df = scan_dataset(dataset_root)
+    if dataset_df.empty:
+        return {
+            "label_items": label_items,
+            "dataset_bars": [],
+            "dataset_splits": [],
+            "stats": {
+                "total_images": 0,
+                "total_classes": len(label_items),
+                "average_per_class": 0,
+                "size_display": "0.0 GB",
+            },
+        }
+
+    class_counts = dataset_df.groupby("class").size().sort_index()
+    max_count = int(class_counts.max()) if len(class_counts) else 1
+    max_count = max(max_count, 1)
+
+    dataset_bars = [
+        {
+            "label": class_name,
+            "name": get_vietnamese_label(class_name),
+            "count": int(count),
+            "ratio": round((int(count) / max_count) * 100, 1),
+        }
+        for class_name, count in class_counts.items()
+    ]
+
+    split_labels = {
+        "train": "Training Set",
+        "validation": "Validation Set",
+        "test": "Test Set",
+    }
+    split_counts = dataset_df.groupby("split").size()
+    total_images = int(len(dataset_df))
+
+    dataset_splits = []
+    for split_name in ("train", "validation", "test"):
+        split_count = int(split_counts.get(split_name, 0))
+        percentage = int(round((split_count / total_images) * 100)) if total_images else 0
+        dataset_splits.append(
+            {
+                "name": split_labels[split_name],
+                "count": f"{split_count:,} hình ảnh",
+                "percentage": percentage,
+                "is_primary": split_name == "train",
+            }
+        )
+
+    total_size_bytes = 0
+    for image_path in dataset_df["path"]:
+        path_obj = Path(image_path)
+        if path_obj.exists():
+            total_size_bytes += path_obj.stat().st_size
+
+    total_classes = len(class_counts)
+    average_per_class = int(round(total_images / total_classes)) if total_classes else 0
+    size_display = f"{total_size_bytes / (1024 ** 3):.1f} GB"
+
+    return {
+        "label_items": label_items,
+        "dataset_bars": dataset_bars,
+        "dataset_splits": dataset_splits,
+        "stats": {
+            "total_images": total_images,
+            "total_classes": total_classes,
+            "average_per_class": average_per_class,
+            "size_display": size_display,
+        },
+    }
+
+
 def home_view(request):
+    dataset_overview = get_dataset_overview()
+    stats = dataset_overview["stats"]
+
     context = {
         "page_name": "home",
         "hero": {
@@ -52,7 +164,7 @@ def home_view(request):
             {
                 "icon_key": "shield",
                 "title": "Đa Dạng Loại Rau Củ",
-                "description": "Hỗ trợ phân loại nhiều loại rau củ phổ biến tại Việt Nam",
+                "description": "Hỗ trợ phân loại nhiều loại rau củ phổ biến trong tập dữ liệu hiện tại",
             },
         ],
         "usage_steps": [
@@ -76,9 +188,9 @@ def home_view(request):
             },
         ],
         "stats": [
-            {"number": "15+", "label": "Loại Rau Củ"},
+            {"number": str(stats["total_classes"]), "label": "Loại Rau Củ"},
             {"number": "95%", "label": "Độ Chính Xác"},
-            {"number": "5000+", "label": "Hình Ảnh"},
+            {"number": f"{stats['total_images']:,}", "label": "Hình Ảnh"},
             {"number": "<2s", "label": "Thời Gian Xử Lý"},
         ],
     }
@@ -211,51 +323,19 @@ def pipeline_view(request):
 
 
 def dataset_view(request):
-    dataset_bars = [
-        {"name": "Cà chua", "count": 450, "ratio": 100},
-        {"name": "Cà rốt", "count": 420, "ratio": 93.3},
-        {"name": "Khoai tây", "count": 380, "ratio": 84.4},
-        {"name": "Bắp cải", "count": 360, "ratio": 80},
-        {"name": "Ớt chuông", "count": 340, "ratio": 75.6},
-        {"name": "Dưa chuột", "count": 330, "ratio": 73.3},
-        {"name": "Hành tây", "count": 320, "ratio": 71.1},
-        {"name": "Bí đỏ", "count": 310, "ratio": 68.9},
-        {"name": "Rau bina", "count": 300, "ratio": 66.7},
-        {"name": "Súp lơ xanh", "count": 290, "ratio": 64.4},
-        {"name": "Cà tím", "count": 280, "ratio": 62.2},
-        {"name": "Ớt", "count": 270, "ratio": 60},
-        {"name": "Bí ngòi", "count": 260, "ratio": 57.8},
-        {"name": "Đậu Hà Lan", "count": 250, "ratio": 55.6},
-        {"name": "Ngô", "count": 240, "ratio": 53.3},
-    ]
+    dataset_overview = get_dataset_overview()
+    stats = dataset_overview["stats"]
 
     context = {
         "page_name": "dataset-page",
         "dataset_stats": [
-            {"icon_key": "image", "value": "4,800", "label": "Tổng số hình ảnh"},
-            {"icon_key": "layers", "value": "15", "label": "Số loại rau củ"},
-            {"icon_key": "chart", "value": "320", "label": "TB mỗi loại"},
-            {"icon_key": "database", "value": "2.3 GB", "label": "Dung lượng"},
+            {"icon_key": "image", "value": f"{stats['total_images']:,}", "label": "Tổng số hình ảnh"},
+            {"icon_key": "layers", "value": str(stats["total_classes"]), "label": "Số loại rau củ"},
+            {"icon_key": "chart", "value": str(stats["average_per_class"]), "label": "TB mỗi loại"},
+            {"icon_key": "database", "value": stats["size_display"], "label": "Dung lượng"},
         ],
-        "dataset_bars": dataset_bars,
-        "dataset_splits": [
-            {
-                "name": "Training Set",
-                "count": "3,360 hình ảnh",
-                "percentage": 70,
-                "is_primary": True,
-            },
-            {
-                "name": "Validation Set",
-                "count": "960 hình ảnh",
-                "percentage": 20,
-            },
-            {
-                "name": "Test Set",
-                "count": "480 hình ảnh",
-                "percentage": 10,
-            },
-        ],
+        "dataset_bars": dataset_overview["dataset_bars"],
+        "dataset_splits": dataset_overview["dataset_splits"],
         "augmentation_methods": [
             "Rotation (±30°)",
             "Horizontal Flip",
@@ -266,7 +346,7 @@ def dataset_view(request):
             "Random Crop",
             "Gaussian Noise",
         ],
-        "dataset_filters": dataset_bars,
+        "dataset_filters": dataset_overview["dataset_bars"],
         "dataset_samples": get_dataset_samples(),
     }
     return render(request, "pages/dataset.html", context)

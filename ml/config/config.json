@@ -1,0 +1,28 @@
+{
+  "feature": {
+    "target_size": [128, 128],
+    "preprocess_mode": "letterbox",
+    "h_bins": 32,
+    "s_bins": 32,
+    "v_bins": 32,
+    "lbp_P": 8,
+    "lbp_R": 1
+  },
+  "transform": {
+    "use_scaler": true,
+    "use_lda": true
+  },
+  "gmm": {
+    "n_components": 3,
+    "covariance_type": "full",
+    "reg_covar": 0.00001,
+    "random_state": 42
+  },
+  "mahalanobis": {
+    "mode": "manual",
+    "threshold": 7.5,
+    "percentile": 95,
+    "source": "validation",
+    "reject_ood_by_default": true
+  }
+}
