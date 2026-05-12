@@ -5,6 +5,9 @@
         </span>
 
         <div class="pipeline-stage-content">
+            <div class="pipeline-stage-meta">
+                <span class="pipeline-stage-phase is-{{ step.phase_slug }}">{{ step.phase }}</span>
+            </div>
             <h2>{{ step.number }}. {{ step.title }}</h2>
             <p>{{ step.description }}</p>
 

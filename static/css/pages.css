@@ -806,6 +806,35 @@
     gap: 0.6rem;
 }
 
+.pipeline-stage-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.pipeline-stage-phase {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.84rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.pipeline-stage-phase.is-training {
+    background: #e6efff;
+    color: #1d4ed8;
+}
+
+.pipeline-stage-phase.is-prediction {
+    background: #e8fff2;
+    color: #067647;
+}
+
 .pipeline-stage-content h2 {
     margin: 0;
     color: var(--text-color);
@@ -977,6 +1006,7 @@
     font-size: 0.98rem;
     font-weight: 800;
     text-align: right;
+    overflow-wrap: anywhere;
 }
 
 .training-metrics-card {
@@ -1000,6 +1030,11 @@
     gap: 1.25rem 2rem;
 }
 
+.training-metrics-card.is-empty {
+    background: #f8fafc;
+    border-color: #d8e0ea;
+}
+
 .training-metric-item {
     display: grid;
     gap: 0.2rem;
@@ -1015,6 +1050,25 @@
 .training-metric-item span {
     color: var(--primary-dark);
     font-size: 0.96rem;
+}
+
+.training-metrics-empty,
+.training-metrics-note {
+    margin: 0;
+}
+
+.training-metrics-empty {
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.55;
+}
+
+.training-metrics-note {
+    margin-top: 0.85rem;
+    color: #44607d;
+    font-size: 0.94rem;
+    line-height: 1.55;
 }
 
 .pipeline-flow-section {
@@ -1055,6 +1109,7 @@
     font-size: 1.05rem;
     font-weight: 700;
     text-align: center;
+    line-height: 1.35;
 }
 
 .pipeline-flow-pill.is-blue {
@@ -1091,334 +1146,4 @@
     color: #9aa3b2;
     font-size: 2rem;
     line-height: 1;
-}
-
-.dataset-page {
-    background: #ffffff;
-}
-
-.dataset-page .site-main {
-    padding-top: calc(var(--navbar-height) + 0.35rem);
-    padding-bottom: 2.75rem;
-    background: linear-gradient(180deg, #ffffff 0 86px, #eefdf4 86px 100%);
-}
-
-.dataset-page .page-shell {
-    max-width: 1520px;
-    gap: 1.9rem;
-}
-
-.dataset-page .site-footer {
-    padding-top: 0.9rem;
-    border-top: 1px solid rgba(13, 27, 54, 0.06);
-    background: #ffffff;
-}
-
-.dataset-hero {
-    display: grid;
-    justify-items: center;
-    text-align: center;
-    padding-top: 0.6rem;
-}
-
-.dataset-hero-copy {
-    display: grid;
-    gap: 0.55rem;
-    max-width: 860px;
-}
-
-.dataset-hero-copy h1 {
-    margin: 0;
-    color: var(--text-color);
-    font-size: clamp(2.55rem, 3.8vw, 3.9rem);
-    line-height: 1.06;
-    letter-spacing: -0.06em;
-}
-
-.dataset-hero-copy p {
-    margin: 0;
-    color: var(--text-soft);
-    font-size: 1.08rem;
-    line-height: 1.45;
-}
-
-.dataset-stat-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1.6rem;
-}
-
-.dataset-stat-card,
-.dataset-distribution-card,
-.dataset-detail-card,
-.dataset-gallery-card {
-    border: 1px solid rgba(13, 27, 54, 0.06);
-    background: rgba(255, 255, 255, 0.97);
-    box-shadow: 0 10px 24px rgba(13, 27, 54, 0.1);
-}
-
-.dataset-stat-card {
-    display: grid;
-    justify-items: center;
-    text-align: center;
-    gap: 0.7rem;
-    min-height: 182px;
-    padding: 1.75rem 1rem 1.5rem;
-    border-radius: 24px;
-}
-
-.dataset-stat-icon {
-    display: grid;
-    place-items: center;
-    width: 62px;
-    height: 62px;
-    border-radius: 18px;
-    background: #dff8e7;
-    color: var(--primary-color);
-}
-
-.dataset-stat-icon svg {
-    width: 32px;
-    height: 32px;
-}
-
-.dataset-stat-card strong {
-    color: var(--text-color);
-    font-size: clamp(2.05rem, 3vw, 2.65rem);
-    line-height: 1;
-    letter-spacing: -0.05em;
-}
-
-.dataset-stat-card span:last-child {
-    color: #304b68;
-    font-size: 0.98rem;
-}
-
-.dataset-distribution-card {
-    padding: 1.9rem 1.85rem 1.75rem;
-    border-radius: 30px;
-}
-
-.dataset-distribution-card h2,
-.dataset-detail-card h2,
-.dataset-gallery-card h2 {
-    margin: 0 0 1.5rem;
-    color: var(--text-color);
-    font-size: clamp(1.95rem, 2.9vw, 2.45rem);
-    letter-spacing: -0.05em;
-}
-
-.dataset-bars {
-    gap: 1.15rem;
-}
-
-.dataset-page .dataset-bar {
-    gap: 0.42rem;
-}
-
-.dataset-page .dataset-bar-head {
-    color: var(--text-color);
-    font-size: 0.98rem;
-}
-
-.dataset-page .dataset-bar-head span:last-child {
-    color: #66758a;
-}
-
-.dataset-page .dataset-track {
-    height: 12px;
-    background: #dfe4ec;
-}
-
-.dataset-page .dataset-fill {
-    background: linear-gradient(90deg, #0dc14b, #0fa25d);
-}
-
-.dataset-detail-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2rem;
-    align-items: start;
-}
-
-.dataset-detail-card {
-    height: 100%;
-    padding: 1.9rem 1.85rem 1.8rem;
-    border-radius: 30px;
-}
-
-.dataset-split-list {
-    display: grid;
-    gap: 1.25rem;
-}
-
-.dataset-split-card {
-    padding: 1.35rem 1.3rem 1.2rem;
-    border: 1px solid rgba(13, 27, 54, 0.1);
-    border-radius: 20px;
-    background: #ffffff;
-}
-
-.dataset-split-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 0.85rem;
-}
-
-.dataset-split-title {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-}
-
-.dataset-split-title strong {
-    color: var(--text-color);
-    font-size: 0.98rem;
-}
-
-.dataset-split-dot {
-    width: 20px;
-    height: 20px;
-    border-radius: 6px;
-    background: #0dc14b;
-}
-
-.dataset-split-percent {
-    color: var(--text-color);
-    font-size: clamp(2rem, 2.8vw, 2.5rem);
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.05em;
-}
-
-.dataset-split-card p {
-    margin: 0 0 0.85rem;
-    color: #304b68;
-    font-size: 0.98rem;
-}
-
-.dataset-split-track {
-    height: 10px;
-    border-radius: 999px;
-    background: #dfe4ec;
-    overflow: hidden;
-}
-
-.dataset-split-fill {
-    height: 100%;
-    border-radius: inherit;
-    background: #cfd6df;
-}
-
-.dataset-split-fill.is-primary {
-    background: linear-gradient(90deg, #0dc14b, #0fa25d);
-}
-
-.dataset-augmentation-copy {
-    margin: -0.25rem 0 1.35rem;
-    color: #304b68;
-    font-size: 0.98rem;
-    line-height: 1.55;
-}
-
-.dataset-augmentation-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem 0.95rem;
-}
-
-.dataset-augmentation-pill {
-    display: inline-flex;
-    align-items: center;
-    min-height: 56px;
-    padding: 0.95rem 1.2rem;
-    border: 1px solid #9bf0bf;
-    border-radius: 16px;
-    background: #eefcf3;
-    color: var(--primary-dark);
-    font-size: 0.98rem;
-    font-weight: 600;
-}
-
-.dataset-gallery-card {
-    padding: 1.9rem 1.85rem 2rem;
-    border-radius: 30px;
-}
-
-.dataset-filter-label {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-    margin-bottom: 1rem;
-    color: #304b68;
-    font-size: 0.98rem;
-}
-
-.dataset-filter-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #66758a;
-}
-
-.dataset-filter-icon svg {
-    width: 22px;
-    height: 22px;
-}
-
-.dataset-filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.8rem;
-    margin-bottom: 1.45rem;
-}
-
-.dataset-filter-pill {
-    display: inline-flex;
-    align-items: center;
-    min-height: 46px;
-    padding: 0.7rem 1.25rem;
-    border-radius: 16px;
-    background: #f1f3f6;
-    color: #223a57;
-    font-size: 0.98rem;
-    font-weight: 600;
-}
-
-.dataset-sample-grid {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 1.3rem;
-}
-
-.dataset-sample-tile {
-    margin: 0;
-    overflow: hidden;
-    aspect-ratio: 1 / 1;
-    border-radius: 14px;
-    background: #d8e0e8;
-}
-
-.dataset-sample-tile img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.dataset-sample-empty {
-    grid-column: 1 / -1;
-    min-height: 220px;
-    display: grid;
-    place-items: center;
-    padding: 1.5rem;
-    border: 1px dashed #cbd5df;
-    border-radius: 18px;
-    background: #f8fbfd;
-    color: #64748b;
-    font-size: 1rem;
-    font-weight: 500;
-    text-align: center;
 }
