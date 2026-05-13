@@ -16,14 +16,26 @@ except ImportError:  # pragma: no cover - optional dependency
     local_binary_pattern = None
 
 try:
+    from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+    from sklearn.preprocessing import StandardScaler
+except ImportError as exc:  # pragma: no cover - depends on environment
+    LinearDiscriminantAnalysis = None
+    StandardScaler = None
+    _SKLEARN_TRANSFORM_IMPORT_ERROR = exc
+else:  # pragma: no cover - trivial assignment
+    _SKLEARN_TRANSFORM_IMPORT_ERROR = None
+
+try:
     from tqdm import tqdm
 except ImportError:  # pragma: no cover - optional dependency
     tqdm = None
 
-from .preprocessing import preprocess_image, read_image
+from .preprocessing import prepare_image
 
 
 class NumpyStandardScaler:
+    """Legacy scaler class kept for backward-compatible joblib loading."""
+
     def __init__(self):
         self.mean_ = None
         self.scale_ = None
@@ -44,6 +56,8 @@ class NumpyStandardScaler:
 
 
 class NumpyLinearDiscriminantAnalysis:
+    """Legacy LDA class kept for backward-compatible joblib loading."""
+
     def __init__(self, n_components):
         self.n_components = int(n_components)
         self.xbar_ = None
@@ -96,6 +110,20 @@ def _require_cv2():
         ) from _CV2_IMPORT_ERROR
 
 
+def _require_sklearn_transformers():
+    if StandardScaler is None or LinearDiscriminantAnalysis is None:
+        raise RuntimeError(
+            "Không thể fit scaler/LDA vì thiếu scikit-learn."
+        ) from _SKLEARN_TRANSFORM_IMPORT_ERROR
+
+
+def _validate_prepared_rgb_image(image):
+    image = np.asarray(image)
+    if image.ndim != 3 or image.shape[2] != 3:
+        raise ValueError("Ảnh đầu vào phải có shape (H, W, 3).")
+    return image
+
+
 def _extract_uniform_lbp_histogram(gray, P=8, R=1):
     if P != 8 or R != 1:
         raise RuntimeError(
@@ -135,10 +163,10 @@ def extract_features(prepared_image, **feature_params):
     return extract_feature(prepared_image, skip_preprocess=True, **feature_params)
 
 
-def extract_hsv_feature(img_bgr, h_bins=32, s_bins=32, v_bins=32):
+def extract_hsv_feature(img_rgb, h_bins=32, s_bins=32, v_bins=32):
     _require_cv2()
 
-    hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
+    hsv = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2HSV)
     hist_h = cv2.calcHist([hsv], [0], None, [h_bins], [0, 180]).flatten()
     hist_s = cv2.calcHist([hsv], [1], None, [s_bins], [0, 256]).flatten()
     hist_v = cv2.calcHist([hsv], [2], None, [v_bins], [0, 256]).flatten()
@@ -147,10 +175,10 @@ def extract_hsv_feature(img_bgr, h_bins=32, s_bins=32, v_bins=32):
     return feature / (feature.sum() + 1e-8)
 
 
-def extract_lbp_feature(img_bgr, P=8, R=1):
+def extract_lbp_feature(img_rgb, P=8, R=1):
     _require_cv2()
 
-    gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2GRAY)
 
     if local_binary_pattern is not None:
         lbp = local_binary_pattern(gray, P=P, R=R, method="uniform")
@@ -177,11 +205,12 @@ def extract_feature(
     lbp_R=1,
     skip_preprocess=False,
 ):
-    image = read_image(image_or_path)
-
-    if not skip_preprocess:
-        image = preprocess_image(
-            image,
+    if skip_preprocess and isinstance(image_or_path, np.ndarray):
+        image = _validate_prepared_rgb_image(image_or_path).copy()
+    else:
+        # Train/predict path chuẩn hóa toàn bộ ảnh đầu vào sang RGB trước khi lấy feature.
+        image = prepare_image(
+            image_or_path,
             target_size=target_size,
             mode=preprocess_mode,
         )
@@ -233,8 +262,11 @@ def fit_feature_transformer(X_train, y_train, use_scaler=True, use_lda=True):
     lda = None
     X_train_t = X_train
 
+    if use_scaler or use_lda:
+        _require_sklearn_transformers()
+
     if use_scaler:
-        scaler = NumpyStandardScaler().fit(X_train_t)
+        scaler = StandardScaler().fit(X_train_t)
         X_train_t = scaler.transform(X_train_t)
 
     if use_lda:
@@ -244,10 +276,10 @@ def fit_feature_transformer(X_train, y_train, use_scaler=True, use_lda=True):
         n_classes = len(np.unique(y_train))
         n_components = min(n_classes - 1, X_train_t.shape[1])
         if n_components > 0:
-            lda = NumpyLinearDiscriminantAnalysis(n_components=n_components).fit(X_train_t, y_train)
-            X_train_t = lda.transform(X_train_t)
+            lda = LinearDiscriminantAnalysis(n_components=n_components)
+            X_train_t = lda.fit_transform(X_train_t, y_train)
 
-    return X_train_t.astype(np.float32), scaler, lda
+    return np.asarray(X_train_t, dtype=np.float32), scaler, lda
 
 
 def transform_features(X, scaler=None, lda=None):
