@@ -74,8 +74,9 @@ Vai trò:
 Vai trò:
 
 - `read_image()` đọc ảnh từ path
+- `convert_bgr_to_rgb()` chuẩn hóa ảnh OpenCV từ BGR sang RGB để contract nội bộ bám baseline
 - `preprocess_image()` resize hoặc letterbox
-- `prepare_image()` là entrypoint gọn cho bước chuẩn hóa đầu vào
+- `prepare_image()` là entrypoint gọn cho bước chuẩn hóa đầu vào và luôn trả về ảnh RGB
 
 ### `ml/feature_extraction.py`
 
@@ -84,16 +85,22 @@ Vai trò:
 Pipeline hiện tại:
 
 1. Đọc ảnh
-2. Preprocess về kích thước theo config
-3. Trích histogram HSV
-4. Trích histogram LBP
+2. Chuyển contract nội bộ sang RGB rồi preprocess về kích thước theo config
+3. Trích histogram HSV từ ảnh RGB
+4. Trích histogram LBP từ ảnh grayscale suy ra từ RGB
 5. Ghép 2 phần thành vector feature cuối cùng
 
 Ngoài ra file này còn có:
 
 - `build_feature_matrix()` để tạo ma trận feature từ DataFrame
-- `fit_feature_transformer()` để fit scaler/LDA
+- `fit_feature_transformer()` để fit `sklearn.preprocessing.StandardScaler` và `sklearn.discriminant_analysis.LinearDiscriminantAnalysis`
 - `transform_features()` để transform feature khi predict/evaluate
+
+Lưu ý:
+
+- Việc đổi sang RGB giúp contract rõ ràng và bám baseline hơn; không có nghĩa pipeline BGR cũ đang tính sai feature.
+- Dùng `sklearn` cho scaler/LDA giúp dễ giải thích, ổn định số học hơn và giảm rủi ro sai khác từ code tự build.
+- Hai class numpy legacy vẫn được giữ lại chỉ để load các artifact cũ đã train trước đó.
 
 ### `ml/model.py`
 

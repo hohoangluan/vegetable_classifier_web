@@ -21,6 +21,13 @@ def _require_cv2():
         ) from _CV2_IMPORT_ERROR
 
 
+def _validate_color_image(image):
+    image = np.asarray(image)
+    if image.ndim != 3 or image.shape[2] != 3:
+        raise ValueError("Ảnh đầu vào phải có shape (H, W, 3).")
+    return image
+
+
 def read_image(image_or_path):
     _require_cv2()
 
@@ -41,12 +48,17 @@ def read_image(image_or_path):
     raise TypeError("image_or_path phải là đường dẫn ảnh hoặc numpy.ndarray.")
 
 
-def preprocess_image(img_bgr, target_size=(128, 128), mode="letterbox"):
+def convert_bgr_to_rgb(img_bgr):
     _require_cv2()
 
-    image = np.asarray(img_bgr)
-    if image.ndim != 3 or image.shape[2] != 3:
-        raise ValueError("Ảnh đầu vào phải có shape (H, W, 3).")
+    image = _validate_color_image(img_bgr)
+    return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+
+def preprocess_image(img_rgb, target_size=(128, 128), mode="letterbox"):
+    _require_cv2()
+
+    image = _validate_color_image(img_rgb)
 
     if not isinstance(target_size, (list, tuple)) or len(target_size) != 2:
         raise ValueError("target_size phải là tuple/list gồm 2 số nguyên.")
@@ -76,5 +88,7 @@ def preprocess_image(img_bgr, target_size=(128, 128), mode="letterbox"):
 
 
 def prepare_image(image_or_path, target_size=(128, 128), mode="letterbox"):
-    image = read_image(image_or_path)
-    return preprocess_image(image, target_size=target_size, mode=mode)
+    # OpenCV đọc ảnh theo BGR, nên contract nội bộ được chuẩn hóa sang RGB tại đây.
+    image_bgr = read_image(image_or_path)
+    image_rgb = convert_bgr_to_rgb(image_bgr)
+    return preprocess_image(image_rgb, target_size=target_size, mode=mode)
