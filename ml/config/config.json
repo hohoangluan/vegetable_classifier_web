@@ -1,6 +1,9 @@
 {
   "feature": {
-    "target_size": [128, 128],
+    "target_size": [
+      128,
+      128
+    ],
     "preprocess_mode": "letterbox",
     "h_bins": 32,
     "s_bins": 32,
@@ -20,7 +23,7 @@
   },
   "mahalanobis": {
     "mode": "manual",
-    "threshold": 7.5,
+    "threshold": 5,
     "percentile": 95,
     "source": "validation",
     "reject_ood_by_default": true
