@@ -399,7 +399,7 @@ def pipeline_view(request):
         ]
         performance_metrics_note = (
             f"Đánh giá trên {int(evaluation.get('n_samples', 0)):,} mẫu test với "
-            f"threshold Mahalanobis {evaluation.get('threshold_maha', mahalanobis_config.get('threshold', 'N/A'))}."
+            f"threshold Mahalanobis {mahalanobis_config.get('threshold', 'N/A')}."
         )
 
     context = {
@@ -541,16 +541,6 @@ def dataset_view(request):
         ],
         "dataset_bars": dataset_overview["dataset_bars"],
         "dataset_splits": dataset_overview["dataset_splits"],
-        "augmentation_methods": [
-            "Rotation (±30°)",
-            "Horizontal Flip",
-            "Vertical Flip",
-            "Zoom (0.8-1.2x)",
-            "Brightness Adjustment (±20%)",
-            "Contrast Adjustment (±20%)",
-            "Random Crop",
-            "Gaussian Noise",
-        ],
         "dataset_filters": dataset_overview["dataset_bars"],
         "dataset_samples": get_dataset_samples(),
     }
