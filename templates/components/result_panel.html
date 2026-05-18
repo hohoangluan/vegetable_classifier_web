@@ -46,6 +46,10 @@
                 <strong>{{ result.mahalanobis|default:0|floatformat:2 }}</strong>
             </div>
             <div class="detail-row">
+                <span>Ngưỡng phân bố (Threshold):</span>
+                <strong>{{ result.threshold_maha|default:"N/A"|floatformat:2 }}</strong>
+            </div>
+            <div class="detail-row">
                 <span>Thời gian xử lý:</span>
                 <strong>{{ result.processing_time|default:"1.8s" }}</strong>
             </div>
