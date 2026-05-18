@@ -80,21 +80,56 @@
             <span>Lọc theo loại:</span>
         </div>
 
-        <div class="dataset-filter-row">
+        <div class="dataset-filter-row" id="dataset-filter-container">
+            <span class="dataset-filter-pill is-active" data-class="all" style="cursor: pointer;">Tất cả</span>
             {% for item in dataset_filters %}
-                <span class="dataset-filter-pill">{{ item.name }} ({{ item.count }})</span>
+                <span class="dataset-filter-pill" data-class="{{ item.label }}" style="cursor: pointer;">{{ item.name }} ({{ item.count }})</span>
             {% endfor %}
         </div>
 
-        <div class="dataset-sample-grid">
+        <div class="dataset-sample-grid" id="dataset-sample-grid">
             {% for item in dataset_samples %}
-                <figure class="dataset-sample-tile">
-                    <img src="{% static item.path %}" alt="{{ item.title }}" loading="lazy">
+                <figure class="dataset-sample-tile" data-class="{{ item.class_name }}">
+                    <img src="{{ item.path }}" alt="{{ item.title }}" loading="lazy">
                 </figure>
             {% empty %}
-                <div class="dataset-sample-empty">Chưa có ảnh mẫu trong thư mục `static/images/dataset_samples/`.</div>
+                <div class="dataset-sample-empty">Chưa có ảnh mẫu trong thư mục dataset.</div>
             {% endfor %}
         </div>
     </article>
 </section>
+
+<style>
+    .dataset-filter-pill.is-active {
+        background: var(--surface-3);
+        color: var(--text-1);
+        border-color: var(--brand-primary);
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const filterPills = document.querySelectorAll("#dataset-filter-container .dataset-filter-pill");
+        const sampleTiles = document.querySelectorAll("#dataset-sample-grid .dataset-sample-tile");
+
+        filterPills.forEach(pill => {
+            pill.addEventListener("click", function() {
+                // Remove active class from all pills
+                filterPills.forEach(p => p.classList.remove("is-active"));
+                // Add active class to clicked pill
+                this.classList.add("is-active");
+
+                const selectedClass = this.getAttribute("data-class");
+
+                sampleTiles.forEach(tile => {
+                    if (selectedClass === "all" || tile.getAttribute("data-class") === selectedClass) {
+                        tile.style.display = "block";
+                    } else {
+                        tile.style.display = "none";
+                    }
+                });
+            });
+        });
+    });
+</script>
 {% endblock %}

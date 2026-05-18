@@ -14,3 +14,11 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    
+    # Phục vụ file từ thư mục dataset ngoài dự án
+    import os
+    from django.views.static import serve
+    dataset_root = os.path.join(settings.BASE_DIR.parent, "dataset")
+    urlpatterns += [
+        path("dataset-media/<path:path>", serve, {"document_root": dataset_root}),
+    ]

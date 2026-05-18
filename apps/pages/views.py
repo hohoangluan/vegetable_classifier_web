@@ -126,23 +126,31 @@ def format_mahalanobis_summary(mahalanobis_config):
 
 
 def get_dataset_samples():
-    samples_dir = settings.BASE_DIR / "static" / "images" / "dataset_samples"
-    static_root = settings.BASE_DIR / "static"
+    dataset_root = get_dataset_root()
+    if not dataset_root.exists():
+        return []
 
-    if not samples_dir.exists():
+    dataset_df = scan_dataset(dataset_root)
+    if dataset_df.empty:
         return []
 
     samples = []
-    for file_path in sorted(samples_dir.rglob("*")):
-        if not file_path.is_file() or file_path.suffix.lower() not in DATASET_SAMPLE_EXTENSIONS:
-            continue
+    # Lấy toàn bộ ảnh trong dataset
+    for class_name, group in dataset_df.groupby("class"):
+        for _, row in group.iterrows():
+            path_obj = Path(row["path"])
+            try:
+                rel_path = path_obj.relative_to(dataset_root).as_posix()
+            except ValueError:
+                continue
 
-        samples.append(
-            {
-                "title": file_path.stem.replace("-", " ").replace("_", " ").title(),
-                "path": file_path.relative_to(static_root).as_posix(),
-            }
-        )
+            samples.append(
+                {
+                    "title": f"{get_vietnamese_label(class_name)} - {path_obj.name}",
+                    "path": f"/dataset-media/{rel_path}",
+                    "class_name": class_name,
+                }
+            )
 
     return samples
 
