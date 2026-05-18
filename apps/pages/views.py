@@ -316,7 +316,7 @@ def home_view(request):
         ],
         "stats": [
             {"number": str(stats["total_classes"]), "label": "Loại Rau Củ"},
-            {"number": "95%", "label": "Độ Chính Xác"},
+            {"number": "93.26%", "label": "Độ Chính Xác"},
             {"number": f"{stats['total_images']:,}", "label": "Hình Ảnh"},
             {"number": "<2s", "label": "Thời Gian Xử Lý"},
         ],
