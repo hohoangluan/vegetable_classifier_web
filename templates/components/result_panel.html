@@ -1,15 +1,20 @@
 {% if result %}
-<div class="classification-result is-success">
+<div class="classification-result {% if result.is_ood %}is-warning{% else %}is-success{% endif %}">
     <div class="classification-alert">
         <span class="classification-alert-icon">
-            {% include "components/icon_symbol.html" with name="check-circle" %}
+            {% if result.is_ood %}
+                {% include "components/icon_symbol.html" with name="shield" %}
+            {% else %}
+                {% include "components/icon_symbol.html" with name="check-circle" %}
+            {% endif %}
         </span>
         <div>
             <p>Kết quả nhận diện:</p>
-            <h3>{% firstof result.label_vi result.label "Không xác định" %}</h3>
+            <h3>{% if result.is_ood %}Không thuộc tập dữ liệu (OOD){% else %}{% firstof result.label_vi result.label "Không xác định" %}{% endif %}</h3>
         </div>
     </div>
 
+    {% if not result.is_ood %}
     <div class="confidence-block">
         <div class="confidence-head">
             <span>Độ tin cậy</span>
@@ -19,6 +24,7 @@
             <div class="confidence-fill" style="width: {{ result.confidence_percent|default:0 }}%;"></div>
         </div>
     </div>
+    {% endif %}
 
     <div class="classification-divider"></div>
 
@@ -26,8 +32,18 @@
         <h3>Thông tin chi tiết</h3>
         <div class="detail-grid">
             <div class="detail-row">
-                <span>Loại rau:</span>
-                <strong>{% firstof result.label_vi result.label "Không xác định" %}</strong>
+                <span>Loại dự đoán gần nhất:</span>
+                <strong>{% firstof result.class_prediction_vi result.class_prediction result.label_vi result.label "Không xác định" %}</strong>
+            </div>
+            {% if result.is_ood %}
+            <div class="detail-row">
+                <span>Trạng thái:</span>
+                <strong style="color: #e58a00;">Ngoài phân bố (OOD)</strong>
+            </div>
+            {% endif %}
+            <div class="detail-row">
+                <span>Khoảng cách Mahalanobis:</span>
+                <strong>{{ result.mahalanobis|default:0|floatformat:2 }}</strong>
             </div>
             <div class="detail-row">
                 <span>Thời gian xử lý:</span>

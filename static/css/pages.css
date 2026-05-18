@@ -902,6 +902,11 @@
     background: #f6fff8;
 }
 
+.classification-result.is-warning .classification-alert {
+    border-color: #ffdca8;
+    background: #fffdf5;
+}
+
 .classification-alert-icon {
     display: grid;
     place-items: center;
@@ -911,6 +916,11 @@
     background: #ffffff;
     color: var(--primary-color);
     box-shadow: inset 0 0 0 1px rgba(8, 185, 79, 0.12);
+}
+
+.classification-result.is-warning .classification-alert-icon {
+    color: #e58a00;
+    box-shadow: inset 0 0 0 1px rgba(229, 138, 0, 0.12);
 }
 
 .classification-alert-icon svg {

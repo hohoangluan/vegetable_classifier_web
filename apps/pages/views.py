@@ -344,7 +344,8 @@ def pipeline_view(request):
     feature_config = pipeline_config["feature"]
     transform_config = pipeline_config["transform"]
     gmm_config = pipeline_config["gmm"]
-    mahalanobis_config = pipeline_report.get("mahalanobis") or pipeline_config["mahalanobis"]
+    # Ưu tiên lấy cấu hình hiện tại từ config.json để hiển thị trên UI
+    mahalanobis_config = pipeline_config["mahalanobis"]
 
     report_split_counts = pipeline_report.get("split_counts") or {}
     fallback_split_counts = dataset_overview.get("split_count_map") or {}
