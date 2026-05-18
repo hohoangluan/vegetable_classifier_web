@@ -22,7 +22,8 @@
     "random_state": 42
   },
   "mahalanobis": {
-    "mode": "manual",
+    "mode": "chi2",
+    "alpha": 0.05,
     "threshold": 5,
     "percentile": 95,
     "source": "validation",

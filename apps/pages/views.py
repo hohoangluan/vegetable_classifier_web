@@ -39,6 +39,7 @@ PIPELINE_CONFIG_FALLBACK = {
         "percentile": 95,
         "source": "validation",
         "reject_ood_by_default": True,
+        "alpha": 0.05,
     },
 }
 
@@ -121,6 +122,10 @@ def format_mahalanobis_summary(mahalanobis_config):
         percentile = mahalanobis_config.get("percentile", "N/A")
         source = mahalanobis_config.get("source", "train")
         return f"Percentile {percentile}% từ {source}"
+
+    if mode == "chi2":
+        alpha = mahalanobis_config.get("alpha", "N/A")
+        return f"Chi-Square (α={alpha})"
 
     return "Tắt"
 
@@ -397,9 +402,15 @@ def pipeline_view(request):
             {"label": "Rejection Rate", "value": format_metric_percentage(evaluation.get("rejection_rate"))},
             {"label": "OOD Count", "value": f"{int(evaluation.get('n_ood', 0))} mẫu"},
         ]
+        threshold_display = evaluation.get("threshold_maha")
+        if threshold_display is not None:
+            threshold_display = f"{threshold_display:.2f}"
+        else:
+            threshold_display = "N/A"
+            
         performance_metrics_note = (
             f"Đánh giá trên {int(evaluation.get('n_samples', 0)):,} mẫu test với "
-            f"threshold Mahalanobis {mahalanobis_config.get('threshold', 'N/A')}."
+            f"threshold Mahalanobis {threshold_display} ({format_mahalanobis_summary(mahalanobis_config)})."
         )
 
     context = {

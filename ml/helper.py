@@ -12,6 +12,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from scipy.stats import chi2
 
 try:
     from sklearn.mixture import GaussianMixture
@@ -107,8 +108,8 @@ def load_config(config_path):
     config["feature"]["target_size"] = target_size
 
     mode = config["mahalanobis"].get("mode")
-    if mode not in {"none", "manual", "percentile"}:
-        raise ValueError("mahalanobis.mode chỉ nhận 'none', 'manual' hoặc 'percentile'.")
+    if mode not in {"none", "manual", "percentile", "chi2"}:
+        raise ValueError("mahalanobis.mode chỉ nhận 'none', 'manual', 'percentile' hoặc 'chi2'.")
 
     return config
 
@@ -261,3 +262,11 @@ def compute_mahalanobis_threshold(X, classes, gmms, percentile=95):
 
     maha = compute_mahalanobis_batch(X, classes, gmms)
     return float(np.percentile(maha["distance"], percentile))
+
+
+def compute_mahalanobis_threshold_chi2(p, alpha):
+    alpha = float(alpha)
+    if not 0 < alpha < 1:
+        raise ValueError("alpha phải nằm trong khoảng (0, 1).")
+
+    return float(np.sqrt(chi2.ppf(1 - alpha, df=p)))

@@ -22,6 +22,13 @@ def predict(image_path):
         if maha_config.get("mode") == "manual" and "threshold" in maha_config:
             model.threshold_maha = float(maha_config["threshold"])
             model.maha_params = maha_config
+        elif maha_config.get("mode") == "chi2" and "alpha" in maha_config:
+            from .helper import compute_mahalanobis_threshold_chi2
+            if model.gmms:
+                first_class = list(model.gmms.keys())[0]
+                p = model.gmms[first_class].means_.shape[1]
+                model.threshold_maha = compute_mahalanobis_threshold_chi2(p, float(maha_config["alpha"]))
+            model.maha_params = maha_config
     except Exception:
         pass
 
@@ -52,5 +59,11 @@ def predict(image_path):
     ):
         if key in raw_result:
             result[key] = raw_result[key]
+
+    # Bổ sung thông tin mode cho UI
+    if hasattr(model, "maha_params"):
+        result["maha_mode"] = model.maha_params.get("mode")
+        if result["maha_mode"] == "chi2":
+            result["maha_alpha"] = model.maha_params.get("alpha")
 
     return result
