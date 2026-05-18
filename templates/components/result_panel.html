@@ -49,6 +49,12 @@
                 <span>Ngưỡng phân bố (Threshold):</span>
                 <strong>{{ result.threshold_maha|default:"N/A"|floatformat:2 }}</strong>
             </div>
+            {% if result.maha_mode == "chi2" %}
+            <div class="detail-row">
+                <span>Cấu hình Mahalanobis:</span>
+                <strong>Chi-Square (α={{ result.maha_alpha|default:"0.05" }})</strong>
+            </div>
+            {% endif %}
             <div class="detail-row">
                 <span>Thời gian xử lý:</span>
                 <strong>{{ result.processing_time|default:"1.8s" }}</strong>

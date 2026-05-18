@@ -11,6 +11,7 @@ from .feature_extraction import (
 from .helper import (
     compute_mahalanobis_batch,
     compute_mahalanobis_threshold,
+    compute_mahalanobis_threshold_chi2,
     fit_gmm_classifier,
     predict_gmm_class,
 )
@@ -146,8 +147,15 @@ class VegetableGMMModel:
                 percentile=percentile,
             )
 
+        elif maha_mode == "chi2":
+            alpha = self.maha_params.get("alpha")
+            if alpha is None:
+                raise ValueError("mode='chi2' yêu cầu mahalanobis.alpha trong config.")
+            p = X_train_t.shape[1]
+            self.threshold_maha = compute_mahalanobis_threshold_chi2(p, alpha)
+
         else:
-            raise ValueError("mahalanobis.mode chỉ nhận 'none', 'manual' hoặc 'percentile'.")
+            raise ValueError("mahalanobis.mode chỉ nhận 'none', 'manual', 'percentile' hoặc 'chi2'.")
 
         self.is_trained = True
         return self

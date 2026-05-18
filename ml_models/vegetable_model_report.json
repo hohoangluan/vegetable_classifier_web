@@ -1,8 +1,8 @@
 {
   "dataset_root": "D:\\Study\\ML\\code\\dataset",
   "config_path": "D:\\Study\\ML\\code\\vegetable_classifier_web\\ml\\config\\config.json",
-  "output_model_path": "ml_models\\vegetable_model_sklearn_smoke.pkl",
-  "output_report_path": "ml_models\\vegetable_model_sklearn_smoke_report.json",
+  "output_model_path": "D:\\Study\\ML\\code\\vegetable_classifier_web\\ml_models\\vegetable_model.pkl",
+  "output_report_path": "D:\\Study\\ML\\code\\vegetable_classifier_web\\ml_models\\vegetable_model_report.json",
   "class_names": [
     "Bean",
     "Bitter_Gourd",
@@ -55,17 +55,17 @@
     "lbp_R": 1
   },
   "mahalanobis": {
-    "mode": "manual",
-    "threshold": 7.5,
+    "mode": "chi2",
+    "threshold": 4.866702302878262,
     "reject_ood_by_default": true
   },
   "evaluation": {
-    "accuracy": 0.9325925925925926,
-    "macro_f1": 0.8759980702446217,
-    "rejection_rate": 0.003703703703703704,
+    "accuracy": 0.8651851851851852,
+    "macro_f1": 0.8473866188350644,
+    "rejection_rate": 0.08555555555555555,
     "n_samples": 2700,
-    "n_ood": 10,
-    "threshold_maha": 7.5,
-    "classification_report": "label\tprecision\trecall\tf1-score\tsupport\nBean\t0.922\t0.917\t0.919\t180\nBitter_Gourd\t0.954\t0.928\t0.941\t180\nBottle_Gourd\t0.954\t0.917\t0.935\t180\nBrinjal\t0.889\t0.889\t0.889\t180\nBroccoli\t0.921\t0.906\t0.913\t180\nCabbage\t0.896\t0.906\t0.901\t180\nCapsicum\t0.956\t0.967\t0.961\t180\nCarrot\t0.978\t0.983\t0.981\t180\nCauliflower\t0.930\t0.961\t0.945\t180\nCucumber\t0.953\t0.911\t0.932\t180\nOOD\t0.000\t0.000\t0.000\t0\nPapaya\t0.917\t0.917\t0.917\t180\nPotato\t0.978\t0.972\t0.975\t180\nPumpkin\t0.912\t0.917\t0.914\t180\nRadish\t1.000\t0.967\t0.983\t180\nTomato\t0.889\t0.933\t0.911\t180"
+    "n_ood": 231,
+    "threshold_maha": 4.866702302878262,
+    "classification_report": "label\tprecision\trecall\tf1-score\tsupport\nBean\t0.937\t0.828\t0.879\t180\nBitter_Gourd\t0.955\t0.822\t0.884\t180\nBottle_Gourd\t0.963\t0.872\t0.915\t180\nBrinjal\t0.891\t0.817\t0.852\t180\nBroccoli\t0.927\t0.844\t0.884\t180\nCabbage\t0.907\t0.867\t0.886\t180\nCapsicum\t0.981\t0.872\t0.924\t180\nCarrot\t0.982\t0.900\t0.939\t180\nCauliflower\t0.959\t0.900\t0.928\t180\nCucumber\t0.958\t0.878\t0.916\t180\nOOD\t0.000\t0.000\t0.000\t0\nPapaya\t0.917\t0.861\t0.888\t180\nPotato\t0.987\t0.861\t0.920\t180\nPumpkin\t0.924\t0.883\t0.903\t180\nRadish\t1.000\t0.906\t0.950\t180\nTomato\t0.912\t0.867\t0.889\t180"
   }
 }
