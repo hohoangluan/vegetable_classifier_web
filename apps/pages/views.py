@@ -130,33 +130,27 @@ def format_mahalanobis_summary(mahalanobis_config):
     return "Tắt"
 
 
+@lru_cache(maxsize=1)
 def get_dataset_samples():
-    dataset_root = get_dataset_root()
-    if not dataset_root.exists():
-        return []
-
-    dataset_df = scan_dataset(dataset_root)
-    if dataset_df.empty:
+    samples_root = settings.BASE_DIR / "static" / "images" / "dataset_samples"
+    if not samples_root.exists():
         return []
 
     samples = []
-    # Lấy toàn bộ ảnh trong dataset
-    for class_name, group in dataset_df.groupby("class"):
-        for _, row in group.iterrows():
-            path_obj = Path(row["path"])
-            try:
-                rel_path = path_obj.relative_to(dataset_root).as_posix()
-            except ValueError:
-                continue
-
-            samples.append(
-                {
-                    "title": f"{get_vietnamese_label(class_name)} - {path_obj.name}",
-                    "path": f"/dataset-media/{rel_path}",
-                    "class_name": class_name,
-                }
-            )
-
+    for label_dir in sorted(samples_root.iterdir()):
+        if not label_dir.is_dir():
+            continue
+        class_name = label_dir.name
+        for img_file in sorted(label_dir.iterdir()):
+            if img_file.suffix.lower() in DATASET_SAMPLE_EXTENSIONS:
+                url = settings.STATIC_URL + f"images/dataset_samples/{class_name}/{img_file.name}"
+                samples.append(
+                    {
+                        "title": f"{get_vietnamese_label(class_name)} - {img_file.name}",
+                        "path": url,
+                        "class_name": class_name,
+                    }
+                )
     return samples
 
 
