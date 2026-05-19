@@ -12,24 +12,55 @@
 </section>
 
 <section class="dataset-stat-grid">
-    {% for item in dataset_stats %}
-        <article class="dataset-stat-card">
-            <span class="dataset-stat-icon">
-                {% include "components/icon_symbol.html" with name=item.icon_key %}
-            </span>
-            <strong>{{ item.value }}</strong>
-            <span>{{ item.label }}</span>
-        </article>
-    {% endfor %}
+    <article class="dataset-stat-card">
+        <span class="dataset-stat-icon">
+            {% include "components/icon_symbol.html" with name="image" %}
+        </span>
+        <strong>18,900</strong>
+        <span>Tổng số hình ảnh</span>
+    </article>
+    <article class="dataset-stat-card">
+        <span class="dataset-stat-icon">
+            {% include "components/icon_symbol.html" with name="layers" %}
+        </span>
+        <strong>15</strong>
+        <span>Số loại rau củ</span>
+    </article>
+    <article class="dataset-stat-card">
+        <span class="dataset-stat-icon">
+            {% include "components/icon_symbol.html" with name="chart" %}
+        </span>
+        <strong>1,260</strong>
+        <span>TB mỗi loại</span>
+    </article>
+    <article class="dataset-stat-card">
+        <span class="dataset-stat-icon">
+            {% include "components/icon_symbol.html" with name="database" %}
+        </span>
+        <strong>0.5 GB</strong>
+        <span>Dung lượng</span>
+    </article>
 </section>
 
 <section class="dataset-distribution-section">
     <article class="dataset-distribution-card">
         <h2>Phân Bố Dữ Liệu Theo Loại Rau Củ</h2>
         <div class="dataset-bars">
-            {% for item in dataset_bars %}
-                {% include "components/dataset_bar.html" with name=item.name count=item.count ratio=item.ratio %}
-            {% endfor %}
+            {% include "components/dataset_bar.html" with name="Đậu que" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Khổ qua" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Bầu" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Cà tím" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Súp lơ xanh" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Bắp cải" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Ớt chuông" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Cà rốt" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Súp lơ trắng" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Dưa chuột" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Đu đủ" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Khoai tây" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Bí đỏ" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Củ cải" count=1260 ratio=100.0 %}
+            {% include "components/dataset_bar.html" with name="Cà chua" count=1260 ratio=100.0 %}
         </div>
     </article>
 </section>
@@ -38,23 +69,45 @@
     <article class="dataset-detail-card">
         <h2>Phân Chia Dữ Liệu</h2>
         <div class="dataset-split-list">
-            {% for item in dataset_splits %}
-                <div class="dataset-split-card">
-                    <div class="dataset-split-head">
-                        <div class="dataset-split-title">
-                            {% if item.is_primary %}
-                                <span class="dataset-split-dot" aria-hidden="true"></span>
-                            {% endif %}
-                            <strong>{{ item.name }}</strong>
-                        </div>
-                        <span class="dataset-split-percent">{{ item.percentage }}%</span>
+            <div class="dataset-split-card">
+                <div class="dataset-split-head">
+                    <div class="dataset-split-title">
+                        <span class="dataset-split-dot" aria-hidden="true"></span>
+                        <strong>Training Set</strong>
                     </div>
-                    <p>{{ item.count }}</p>
-                    <div class="dataset-split-track" aria-hidden="true">
-                        <div class="dataset-split-fill{% if item.is_primary %} is-primary{% endif %}" style="width: {{ item.percentage }}%;"></div>
-                    </div>
+                    <span class="dataset-split-percent">71%</span>
                 </div>
-            {% endfor %}
+                <p>13,500 hình ảnh</p>
+                <div class="dataset-split-track" aria-hidden="true">
+                    <div class="dataset-split-fill is-primary" style="width: 71%;"></div>
+                </div>
+            </div>
+
+            <div class="dataset-split-card">
+                <div class="dataset-split-head">
+                    <div class="dataset-split-title">
+                        <strong>Validation Set</strong>
+                    </div>
+                    <span class="dataset-split-percent">14%</span>
+                </div>
+                <p>2,700 hình ảnh</p>
+                <div class="dataset-split-track" aria-hidden="true">
+                    <div class="dataset-split-fill" style="width: 14%;"></div>
+                </div>
+            </div>
+
+            <div class="dataset-split-card">
+                <div class="dataset-split-head">
+                    <div class="dataset-split-title">
+                        <strong>Test Set</strong>
+                    </div>
+                    <span class="dataset-split-percent">14%</span>
+                </div>
+                <p>2,700 hình ảnh</p>
+                <div class="dataset-split-track" aria-hidden="true">
+                    <div class="dataset-split-fill" style="width: 14%;"></div>
+                </div>
+            </div>
         </div>
     </article>
 
@@ -73,9 +126,21 @@
 
         <div class="dataset-filter-row" id="dataset-filter-container">
             <span class="dataset-filter-pill is-active" data-class="all" style="cursor: pointer;">Tất cả</span>
-            {% for item in dataset_filters %}
-                <span class="dataset-filter-pill" data-class="{{ item.label }}" style="cursor: pointer;">{{ item.name }} ({{ item.count }})</span>
-            {% endfor %}
+            <span class="dataset-filter-pill" data-class="Bean" style="cursor: pointer;">Đậu que (1260)</span>
+            <span class="dataset-filter-pill" data-class="Bitter_Gourd" style="cursor: pointer;">Khổ qua (1260)</span>
+            <span class="dataset-filter-pill" data-class="Bottle_Gourd" style="cursor: pointer;">Bầu (1260)</span>
+            <span class="dataset-filter-pill" data-class="Brinjal" style="cursor: pointer;">Cà tím (1260)</span>
+            <span class="dataset-filter-pill" data-class="Broccoli" style="cursor: pointer;">Súp lơ xanh (1260)</span>
+            <span class="dataset-filter-pill" data-class="Cabbage" style="cursor: pointer;">Bắp cải (1260)</span>
+            <span class="dataset-filter-pill" data-class="Capsicum" style="cursor: pointer;">Ớt chuông (1260)</span>
+            <span class="dataset-filter-pill" data-class="Carrot" style="cursor: pointer;">Cà rốt (1260)</span>
+            <span class="dataset-filter-pill" data-class="Cauliflower" style="cursor: pointer;">Súp lơ trắng (1260)</span>
+            <span class="dataset-filter-pill" data-class="Cucumber" style="cursor: pointer;">Dưa chuột (1260)</span>
+            <span class="dataset-filter-pill" data-class="Papaya" style="cursor: pointer;">Đu đủ (1260)</span>
+            <span class="dataset-filter-pill" data-class="Potato" style="cursor: pointer;">Khoai tây (1260)</span>
+            <span class="dataset-filter-pill" data-class="Pumpkin" style="cursor: pointer;">Bí đỏ (1260)</span>
+            <span class="dataset-filter-pill" data-class="Radish" style="cursor: pointer;">Củ cải (1260)</span>
+            <span class="dataset-filter-pill" data-class="Tomato" style="cursor: pointer;">Cà chua (1260)</span>
         </div>
 
         <div class="dataset-sample-grid" id="dataset-sample-grid">
